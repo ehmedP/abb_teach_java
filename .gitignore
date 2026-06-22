@@ -1,0 +1,12 @@
+# ============================================
+# IDE & Editor
+# ============================================
+.idea/*
+.DS_Store
+.mcp.json
+/.fleet
+/.idea
+/.vscode
+/.zed
+.tinker
+CLAUDE.md
