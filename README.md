@@ -1,5 +1,7 @@
 # Tasks
 
+> **Qeyd:** Tasklar üçün yazılmış bütün kod `Main.java` faylının içindədir.
+
 ## Task Descriptions
 
 1. `int x = -7;` — Proqram ekranda **"Mənfi"**, **"Müsbət"** və ya **"Sıfır"** yazsın. *(if-else)*
