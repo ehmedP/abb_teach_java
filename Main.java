@@ -62,7 +62,7 @@ public class Main {
         int providedNumberForPrint = generalScanner.nextInt();
 
         if (providedNumberForPrint >= 0 && providedNumberForPrint <= 100) {
-            for (int i = 1; i < providedNumberForPrint; i += 2) {
+            for (int i = 1; i <= providedNumberForPrint; i += 2) {
                 System.out.println(i);
             }
         } else {
@@ -134,7 +134,6 @@ public class Main {
         // -----------------------------------------------------------------------------------------
 
 
-
         // -----------------------------------------------------------------------------------------
         // Task 5
 
@@ -145,7 +144,7 @@ public class Main {
         generalScanner.nextLine();
 
         System.out.print("Please enter your gender (M/F): ");
-        String gender = generalScanner.nextLine(); // trim, upper or lower necessary
+        String gender = generalScanner.nextLine();
 
         int permittedMinAge = 18;
 
@@ -155,18 +154,17 @@ public class Main {
             System.out.println("Access denied");
         } else {
 
-            if (gender.equals("M")) {
+            if (gender.equalsIgnoreCase("M")) {
                 System.out.println("Male access granted");
-            } else if (gender.equals("F")) {
+            } else if (gender.equalsIgnoreCase("F")) {
                 System.out.println("Female access granted");
             } else {
-                System.out.println("Invalid gender.");
+                System.out.println("Invalid gender entered.");
             }
 
         }
 
         // -----------------------------------------------------------------------------------------
-
 
 
         // -----------------------------------------------------------------------------------------
@@ -193,14 +191,16 @@ public class Main {
             }
 
             for (int i = 0; i < fibonacciLength; i++) {
-                System.out.print(fibonacci[i] + " ");
+                System.out.println(
+                        fibonacci[i] +
+                        (fibonacci[i] % 2 == 0 ? " -> Even" : " -> Odd")
+                );
             }
         }
 
         System.out.println();
 
         // -----------------------------------------------------------------------------------------
-
 
 
         // -----------------------------------------------------------------------------------------
@@ -223,7 +223,7 @@ public class Main {
                 startValue *= i;
             }
 
-            System.out.println("Factorial of " + fibonacciLength + " is " + startValue);
+            System.out.println("Factorial of " + factorialLength + " is " + startValue);
         }
 
         // -----------------------------------------------------------------------------------------
@@ -236,32 +236,39 @@ public class Main {
         System.out.print("Please enter a number (1-1000) to check strong number: ");
 
         int providedFactorialNumber = generalScanner.nextInt();
-        char[] providedFactorialArray = Integer.toString(providedFactorialNumber).toCharArray();
 
-        if (providedFactorialNumber < 0 || providedFactorialNumber > 1000) {
+        if (providedFactorialNumber < 1 || providedFactorialNumber > 1000) {
+
             if (providedFactorialNumber < 0) {
                 System.out.println("Factorial does not exist for negative numbers.");
             }
 
             System.out.println("Please enter a number between 1 and 1000.");
+
         } else {
 
             int totalSum = 0;
+            int tempNumber = providedFactorialNumber;
 
-            for (int digitOfNumber : providedFactorialArray) {
-                startValue = 1;
+            while (tempNumber > 0) {
 
-                for (int j = 1; j <= digitOfNumber; j++) {
-                    startValue *= j;
+                int digit = tempNumber % 10;
+
+                int factorial = 1;
+
+                for (int i = 1; i <= digit; i++) {
+                    factorial *= i;
                 }
 
-                totalSum += startValue;
+                totalSum += factorial;
+
+                tempNumber /= 10;
             }
 
             if (totalSum == providedFactorialNumber) {
-                System.out.println(totalSum + " is a strong number");
+                System.out.println(providedFactorialNumber + " is a strong number");
             } else {
-                System.out.println(totalSum + " is not a strong number");
+                System.out.println(providedFactorialNumber + " is not a strong number");
             }
         }
 
