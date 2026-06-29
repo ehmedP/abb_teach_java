@@ -62,9 +62,11 @@ public class Main {
         int providedNumberForPrint = generalScanner.nextInt();
 
         if (providedNumberForPrint >= 0 && providedNumberForPrint <= 100) {
+
             for (int i = 1; i <= providedNumberForPrint; i += 2) {
                 System.out.println(i);
             }
+
         } else {
             System.out.println("Invalid input. Please enter a number between 1 and 100.");
         }
@@ -193,7 +195,7 @@ public class Main {
             for (int i = 0; i < fibonacciLength; i++) {
                 System.out.println(
                         fibonacci[i] +
-                        (fibonacci[i] % 2 == 0 ? " -> Even" : " -> Odd")
+                                (fibonacci[i] % 2 == 0 ? " -> Even" : " -> Odd")
                 );
             }
         }
@@ -229,7 +231,6 @@ public class Main {
         // -----------------------------------------------------------------------------------------
 
 
-
         // -----------------------------------------------------------------------------------------
         // Task 8
 
@@ -238,10 +239,6 @@ public class Main {
         int providedFactorialNumber = generalScanner.nextInt();
 
         if (providedFactorialNumber < 1 || providedFactorialNumber > 1000) {
-
-            if (providedFactorialNumber < 0) {
-                System.out.println("Factorial does not exist for negative numbers.");
-            }
 
             System.out.println("Please enter a number between 1 and 1000.");
 
@@ -271,6 +268,214 @@ public class Main {
                 System.out.println(providedFactorialNumber + " is not a strong number");
             }
         }
+
+        // -----------------------------------------------------------------------------------------
+
+
+        // -----------------------------------------------------------------------------------------
+        // Task 9
+
+        System.out.print("Please enter a number (1-1000) to check armstrong number: ");
+
+        int providedArmstrongNumber = generalScanner.nextInt();
+
+        if (providedArmstrongNumber < 1 || providedArmstrongNumber > 1000) {
+
+            System.out.println("Please enter a number between 1 and 1000.");
+
+        } else {
+
+            int totalSum = 0;
+            int tempNumber = providedArmstrongNumber;
+            int numberLength = String.valueOf(providedArmstrongNumber).length();
+
+            while (tempNumber > 0) {
+
+                // Burada math methodunu istifade etmeden-de etmek mumkundur.
+                // Bele ki ededi ozu ozune numberLength qeder vurmaq lazimdir.
+                // Bunu ise for ile etmek mumkundur. Sadece tekrar for yazmaq istemedim aciqi.
+
+                totalSum += (int) Math.pow(tempNumber % 10, numberLength);
+
+                tempNumber /= 10;
+            }
+
+            if (totalSum == providedArmstrongNumber) {
+                System.out.println(providedArmstrongNumber + " is an Armstrong number");
+            } else {
+                System.out.println(providedArmstrongNumber + " is not an Armstrong number");
+            }
+        }
+
+        // -----------------------------------------------------------------------------------------
+
+
+        // -----------------------------------------------------------------------------------------
+        // Task 10
+
+        System.out.print("Please enter array length (1-100): ");
+        int arrayLength = generalScanner.nextInt();
+
+        if (arrayLength < 1 || arrayLength > 100) {
+
+            System.out.println("Please enter a number between 1 and 100.");
+
+        } else {
+
+            int[] findMaxMinArray = new int[arrayLength];
+
+            for (int i = 0; i < arrayLength; i++) {
+                System.out.print("Enter element [" + (i + 1) + "]: ");
+                findMaxMinArray[i] = generalScanner.nextInt();
+            }
+
+            int min = findMaxMinArray[0];
+            int max = findMaxMinArray[0];
+
+            for (int iterator : findMaxMinArray) {
+                if (iterator < min) {
+                    min = iterator;
+                }
+
+                if (iterator > max) {
+                    max = iterator;
+                }
+            }
+
+            System.out.println("Maximum number: " + max);
+            System.out.println("Minimum number: " + min);
+
+        }
+
+        // -----------------------------------------------------------------------------------------
+
+
+        // -----------------------------------------------------------------------------------------
+        // Task 11
+
+        System.out.print("Please enter array size (1-20): ");
+        int arraySize = generalScanner.nextInt();
+
+        if (arraySize < 1 || arraySize > 20) {
+
+            System.out.println("Please enter a number between 1 and 20.");
+
+        } else {
+
+            int[][] array = new int[arraySize][arraySize];
+
+            System.out.println("Please enter the array elements: ");
+
+            for (int i = 0; i < array.length; i++) {
+                for (int j = 0; j < array[i].length; j++) {
+                    System.out.print("Element [" + i + "][" + j + "]: ");
+                    array[i][j] = generalScanner.nextInt();
+                }
+            }
+
+            int primaryDiagonalSum = 0;
+            int secondaryDiagonalSum = 0;
+
+            for (int i = 0; i < array.length; i++) {
+                primaryDiagonalSum += array[i][i];
+                secondaryDiagonalSum += array[i][array.length - 1 - i];
+            }
+
+            System.out.println("Primary diagonal sum: " + primaryDiagonalSum);
+            System.out.println("Secondary diagonal sum: " + secondaryDiagonalSum);
+        }
+
+
+        // -----------------------------------------------------------------------------------------
+
+
+        // -----------------------------------------------------------------------------------------
+        // Task 12
+
+        System.out.print("Please enter array size (1-20): ");
+        int arraySizeTask12 = generalScanner.nextInt();
+
+        System.out.println("Please enter min print config: ");
+        int minPrintConfig = generalScanner.nextInt();
+
+        if (arraySizeTask12 < 1 || arraySizeTask12 > 20) {
+
+            System.out.println("Please enter a number between 1 and 20.");
+
+        } else {
+
+            int[][][] arrayTask12 = new int[arraySizeTask12][arraySizeTask12][arraySizeTask12];
+
+            System.out.println("Please enter the arrayTask12 elements: ");
+
+            for (int i = 0; i < arrayTask12.length; i++) {
+                for (int j = 0; j < arrayTask12[i].length; j++) {
+                    for (int z = 0; z < arrayTask12[j].length; z++) {
+                        System.out.print("Element [" + i + "][" + j + "][" + z + "]: ");
+                        arrayTask12[i][j][z] = generalScanner.nextInt();
+                    }
+                }
+            }
+
+            for (int i = 0; i < arrayTask12.length; i++) {
+                for (int j = 0; j < arrayTask12[i].length; j++) {
+                    for (int z = 0; z < arrayTask12[j].length; z++) {
+
+                        if (arrayTask12[i][j][z] > minPrintConfig) {
+                            System.out.println(arrayTask12[i][j][z] + ", ");
+                        }
+
+                    }
+                }
+            }
+        }
+
+
+        // -----------------------------------------------------------------------------------------
+
+
+        // -----------------------------------------------------------------------------------------
+        // Task 13
+
+        System.out.print("Please enter array size (1-100): ");
+        int arraySizeTask13 = generalScanner.nextInt();
+
+        if (arraySizeTask13 < 1 || arraySizeTask13 > 100) {
+
+            System.out.println("Please enter a number between 1 and 100.");
+
+        } else {
+
+            int[] arrayTask13 = new int[arraySizeTask13];
+
+            System.out.println("Please enter the arrayTask13 elements: ");
+
+            for (int i = 0; i < arrayTask13.length; i++) {
+                System.out.print("Element [" + i + "]: ");
+                arrayTask13[i] = generalScanner.nextInt();
+            }
+
+            // Burda bir neçə fərqli sort methodu tətbiq edilə bilər.
+            // Amma men en sade ve menim xosladigim methodu isledecem (Bubble Sort).
+
+            for (int i = 0; i < arrayTask13.length; i++) {
+                for (int j = 0; j < arrayTask13.length; j++) {
+
+                    if (arrayTask13[j] < arrayTask13[j+1]) {
+                        int temp = arrayTask13[j];
+
+                        arrayTask13[j] = arrayTask13[j+1];
+                        arrayTask13[j+1] = temp;
+                    }
+
+                }
+            }
+
+            for (int i = arrayTask13.length - 1; i >= 0; i--) {
+                System.out.print(arrayTask13[i] + " ");
+            }
+        }
+
 
         // -----------------------------------------------------------------------------------------
 
