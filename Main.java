@@ -103,11 +103,11 @@ public class Main {
                 }
 
                 if (i < providedPalindromeLength - 1) {
-                    if (providedPalindrome[i] > providedPalindrome[i + 1]) {
+                    if (providedPalindrome[i] >= providedPalindrome[i + 1]) {
                         isIncreasing = false;
                     }
 
-                    if (providedPalindrome[i] < providedPalindrome[i + 1]) {
+                    if (providedPalindrome[i] <= providedPalindrome[i + 1]) {
                         isDecreasing = false;
                     }
                 }
@@ -180,7 +180,7 @@ public class Main {
             System.out.println("Please enter a number between 1 and 100.");
         } else {
 
-            int[] fibonacci = new int[fibonacciLength];
+            long[] fibonacci = new long[fibonacciLength];
 
             fibonacci[0] = 0;
 
@@ -395,7 +395,7 @@ public class Main {
         System.out.print("Please enter array size (1-20): ");
         int arraySizeTask12 = generalScanner.nextInt();
 
-        System.out.println("Please enter min print config: ");
+        System.out.print("Please enter min print config: ");
         int minPrintConfig = generalScanner.nextInt();
 
         if (arraySizeTask12 < 1 || arraySizeTask12 > 20) {
@@ -410,7 +410,7 @@ public class Main {
 
             for (int i = 0; i < arrayTask12.length; i++) {
                 for (int j = 0; j < arrayTask12[i].length; j++) {
-                    for (int z = 0; z < arrayTask12[j].length; z++) {
+                    for (int z = 0; z < arrayTask12[i][j].length; z++) {
                         System.out.print("Element [" + i + "][" + j + "][" + z + "]: ");
                         arrayTask12[i][j][z] = generalScanner.nextInt();
                     }
@@ -419,15 +419,17 @@ public class Main {
 
             for (int i = 0; i < arrayTask12.length; i++) {
                 for (int j = 0; j < arrayTask12[i].length; j++) {
-                    for (int z = 0; z < arrayTask12[j].length; z++) {
+                    for (int z = 0; z < arrayTask12[i][j].length; z++) {
 
                         if (arrayTask12[i][j][z] > minPrintConfig) {
-                            System.out.println(arrayTask12[i][j][z] + ", ");
+                            System.out.print(arrayTask12[i][j][z] + ", ");
                         }
 
                     }
                 }
             }
+
+            System.out.println();
         }
 
 
@@ -458,16 +460,17 @@ public class Main {
             // Burda bir neçə fərqli sort methodu tətbiq edilə bilər.
             // Amma men en sade ve menim xosladigim methodu isledecem (Bubble Sort).
 
-            for (int i = 0; i < arrayTask13.length; i++) {
-                for (int j = 0; j < arrayTask13.length; j++) {
+            for (int i = 0; i < arrayTask13.length - 1; i++) {
 
-                    if (arrayTask13[j] < arrayTask13[j+1]) {
+                for (int j = 0; j < arrayTask13.length - 1 - i; j++) {
+
+                    if (arrayTask13[j] > arrayTask13[j + 1]) {
+
                         int temp = arrayTask13[j];
 
-                        arrayTask13[j] = arrayTask13[j+1];
-                        arrayTask13[j+1] = temp;
+                        arrayTask13[j] = arrayTask13[j + 1];
+                        arrayTask13[j + 1] = temp;
                     }
-
                 }
             }
 
