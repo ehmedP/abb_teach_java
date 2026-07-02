@@ -12,7 +12,7 @@ java Main.java
 
 Proqramın işləyən nümunəsi (bütün tapşırıqların ardıcıl icrası):
 
-![Console output](./images/img.png)
+![Console output](./images/img1.png)
 
 ---
 
