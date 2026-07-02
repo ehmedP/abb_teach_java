@@ -118,7 +118,6 @@ public class Main {
                 .toLowerCase()
                 .replace(",", "")
                 .replace(".", "")
-                .replace("\\'", "")
                 .replace("!", "")
                 .replace("?", "")
                 .replace(";", "")
@@ -269,6 +268,7 @@ public class Main {
 
                 char currentChar = text.charAt(j);
 
+                // iki for daxilinde indexOf istifade etmek o(n^3) zaman notasiyasi yaradir, ancaq hazirki kecilenler ile bu forma ede bilirem
                 if (currentSubstring.indexOf(String.valueOf(currentChar)) != -1) {
                     break;
                 }
@@ -355,8 +355,16 @@ public class Main {
             return new String[0][0];
         }
 
+        // regex kecmemisik ona gore replace methodu ile temizleyirem
+        // regexleri kecenden sonra bunlari replaceAll ve regex istifadesi ile deyismek olar
         char[] letters = text.toLowerCase()
                 .replace(" ", "")
+                .replace(",", "")
+                .replace(".", "")
+                .replace("!", "")
+                .replace("?", "")
+                .replace(":", "")
+                .replace(";", "")
                 .toCharArray();
 
         Arrays.sort(letters);
