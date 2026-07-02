@@ -8,29 +8,31 @@ public class Main {
         Scanner generalScanner = new Scanner(System.in);
 
         // -----------------------------------------------------------------------------------------
-        // Task 1
+        // Task 1: Palindrome Check
 
         System.out.print("Please enter a text to check palindrome: ");
 
         String palindromeCheckText = generalScanner.nextLine();
+
         System.out.println(isTextPalindrome(palindromeCheckText));
 
         // -----------------------------------------------------------------------------------------
 
 
         // -----------------------------------------------------------------------------------------
-        // Task 2
+        // Task 2: Group Anagrams
 
         String[] anagramArray = readStringArray(generalScanner);
 
         String[][] groupedAnagrams = groupByAnagram(anagramArray);
+
         System.out.println(Arrays.deepToString(groupedAnagrams));
 
         // -----------------------------------------------------------------------------------------
 
 
         // -----------------------------------------------------------------------------------------
-        // Task 3
+        // Task 3: Longest Common Prefix
 
         String[] mostLongestPrefixArray = readStringArray(generalScanner);
 
@@ -42,26 +44,24 @@ public class Main {
 
 
         // -----------------------------------------------------------------------------------------
-        // Task 4
+        // Task 4: Longest Unique Substring
 
-        System.out.print("Please enter a text to get most longest prefix: ");
+        System.out.print("Please enter a text to get most longest unique substring: ");
+        String substringInput = generalScanner.nextLine();
 
-        String mostLongestRepeatedWordArray = generalScanner.nextLine();
+        String mostLongestRepeatedWord = getLongestUniqueSubstring(substringInput);
 
-        String mostLongestRepeatedWord = getLongestUniqueSubstring(mostLongestRepeatedWordArray);
-
-        System.out.println("Most longest repeated word: " + mostLongestRepeatedWord + " and count: " + mostLongestRepeatedWord.length());
-
-        // -----------------------------------------------------------------------------------------
-
+        System.out.println("Most longest unique substring: " + mostLongestRepeatedWord + " and count: " + mostLongestRepeatedWord.length());
 
         // -----------------------------------------------------------------------------------------
-        // Task 5
+
+
+        // -----------------------------------------------------------------------------------------
+        // Task 5: Run-Length Encoding / Decoding
 
         // Encode
 
         System.out.print("Please enter a text to encode by run length: ");
-
         String runLenDecodedText = generalScanner.nextLine();
 
         String runLenEncodedTextProcessed = encodeTextByRunLength(runLenDecodedText);
@@ -71,7 +71,6 @@ public class Main {
         // Decode
 
         System.out.print("Please enter a text to decode by run length: ");
-
         String runLenEncodedText = generalScanner.nextLine();
 
         String runLenDecodedTextProcessed = decodeTextByRunLength(runLenEncodedText);
@@ -82,7 +81,7 @@ public class Main {
 
 
         // -----------------------------------------------------------------------------------------
-        // Task 6
+        // Task 6: Letter Counting Map
 
         System.out.print("Please enter a text to counting by letters: ");
 
@@ -96,14 +95,14 @@ public class Main {
 
 
         // -----------------------------------------------------------------------------------------
-        // Task 7
+        // Task 7: Filter Words by Prefix
 
         System.out.print("Please enter the prefix: ");
-
         String prefix = generalScanner.nextLine();
-        String[] prefixFilteredArray = readStringArray(generalScanner);
 
+        String[] prefixFilteredArray = readStringArray(generalScanner);
         String[] filteredArrayByPrefix = getWordsByPrefix(prefixFilteredArray, prefix);
+
         System.out.println(Arrays.deepToString(filteredArrayByPrefix));
 
         // -----------------------------------------------------------------------------------------
@@ -127,18 +126,16 @@ public class Main {
                 .replace(" ", "");
 
         int palindromeCheckTextLength = palindromeCheckTextCleaned.length();
-        boolean isPalindrome = true;
 
-        for (int i = 0; i < palindromeCheckTextLength; i++) {
+        for (int i = 0; i < palindromeCheckTextLength / 2; i++) {
 
             if (palindromeCheckTextCleaned.charAt(i) != palindromeCheckTextCleaned.charAt(palindromeCheckTextLength - i - 1)) {
-                isPalindrome = false;
-                break;
+                return false;
             }
 
         }
 
-        return isPalindrome;
+        return true;
     }
 
     public static String[][] groupByAnagram(String[] anagrams) {
@@ -237,7 +234,6 @@ public class Main {
         }
 
         String firstWord = wordArray[0];
-        StringBuilder mostLongestPrefixBuilder = new StringBuilder();
 
         // Burada char ile edilen index yoxlamasi startWith methodu ile de edile bilerdi eslinde,
         // amma men char massiv uzerinden yoxlamaq daha optimal oldugunu dusunduyum ucun bu forma etdim.
@@ -249,14 +245,12 @@ public class Main {
             for (int j = 1; j < wordArray.length; j++) {
 
                 if (i >= wordArray[j].length() || wordArray[j].charAt(i) != currentChar) {
-                    return mostLongestPrefixBuilder.toString();
+                    return firstWord.substring(0, i);
                 }
             }
-
-            mostLongestPrefixBuilder.append(currentChar);
         }
 
-        return mostLongestPrefixBuilder.toString();
+        return firstWord;
     }
 
     public static String getLongestUniqueSubstring(String text) {
@@ -325,16 +319,34 @@ public class Main {
             return "";
         }
 
-        StringBuilder decodedText = new StringBuilder();
+        StringBuilder result = new StringBuilder();
 
-        for (int i = 0; i < text.length(); i += 2) {
+        for (int i = 0; i < text.length(); i++) {
 
-            int count = Integer.parseInt(String.valueOf(text.charAt(i + 1)));
+            char ch = text.charAt(i);
 
-            decodedText.append(String.valueOf(text.charAt(i)).repeat(count));
+            if (!Character.isLetter(ch)) {
+                continue;
+            }
+
+            int j = i + 1;
+
+            StringBuilder num = new StringBuilder();
+
+            while (j < text.length() && Character.isDigit(text.charAt(j))) {
+                num.append(text.charAt(j));
+                j++;
+            }
+
+            result.append(String
+                    .valueOf(ch)
+                    .repeat(Integer.parseInt(num.toString()))
+            );
+
+            i = j - 1;
         }
 
-        return decodedText.toString();
+        return result.toString();
     }
 
     public static String[][] getLetterCountMap(String text) {
