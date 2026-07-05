@@ -114,6 +114,10 @@ public class Main {
 
     public static boolean isTextPalindrome(String palindromeCheckText) {
 
+        if (palindromeCheckText == null || palindromeCheckText.isEmpty()) {
+            return false;
+        }
+
         String palindromeCheckTextCleaned = palindromeCheckText
                 .toLowerCase()
                 .replace(",", "")
@@ -121,14 +125,36 @@ public class Main {
                 .replace("!", "")
                 .replace("?", "")
                 .replace(";", "")
-                .replace(":", "")
-                .replace(" ", "");
+                .replace(":", "");
 
-        int palindromeCheckTextLength = palindromeCheckTextCleaned.length();
+        StringBuilder currentWord = new StringBuilder();
 
-        for (int i = 0; i < palindromeCheckTextLength / 2; i++) {
+        for (int i = 0; i < palindromeCheckTextCleaned.length(); i++) {
 
-            if (palindromeCheckTextCleaned.charAt(i) != palindromeCheckTextCleaned.charAt(palindromeCheckTextLength - i - 1)) {
+            char currentChar = palindromeCheckTextCleaned.charAt(i);
+
+            if (currentChar != ' ') {
+                currentWord.append(currentChar);
+                continue;
+            }
+
+            if (currentWord.length() > 0 && !isWordPalindrome(currentWord.toString())) {
+                return false;
+            }
+
+            currentWord.setLength(0);
+        }
+
+        return currentWord.length() <= 0 || isWordPalindrome(currentWord.toString());
+    }
+
+    public static boolean isWordPalindrome(String word) {
+
+        int wordLength = word.length();
+
+        for (int i = 0; i < wordLength / 2; i++) {
+
+            if (word.charAt(i) != word.charAt(wordLength - i - 1)) {
                 return false;
             }
 
