@@ -1,18 +1,21 @@
 package model;
 
 import enums.FareTypeEnum;
-import interfaces.FuelPowered;
 
-public class Bus extends TransportVehicle
-        implements FuelPowered {
+public class Bus extends FuelVehicle {
 
     public Bus() {
-        super(80, 200, 60, 300);
+        super(80, 200, 60, 300, 200);
     }
 
     @Override
     public double calculateFare(double distance, FareTypeEnum fareTypeEnum) {
-        return getRatePerKm();
+        return getRatePerKm() + fareExtra(fareTypeEnum);
+    }
+
+    @Override
+    public double calculateFare(double distance, int passengers, FareTypeEnum fareTypeEnum) {
+        return calculateFare(distance, fareTypeEnum) * passengers;
     }
 
     @Override
@@ -20,15 +23,5 @@ public class Bus extends TransportVehicle
         return super.getTransportInfo() +
                 "Power Source         : Fuel (Internal Combustion)\n" +
                 "Classification       : Public Transit\n";
-    }
-
-    @Override
-    public void refuel(double liters) {
-
-    }
-
-    @Override
-    public boolean hasEnoughFuel(double distanceKm) {
-        return false;
     }
 }

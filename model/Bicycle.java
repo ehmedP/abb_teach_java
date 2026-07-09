@@ -15,7 +15,12 @@ public class Bicycle extends TransportVehicle {
     public double calculateFare(double distance, FareTypeEnum fareTypeEnum) {
         double billableDistance = Math.max(0, distance - FREE_DISTANCE_KM);
 
-        return billableDistance * getRatePerKm();
+        return billableDistance * getRatePerKm() + fareExtra(fareTypeEnum);
+    }
+
+    @Override
+    public double calculateFare(double distance, int passengers, FareTypeEnum fareTypeEnum) {
+        return calculateFare(distance, fareTypeEnum) * passengers;
     }
 
     @Override

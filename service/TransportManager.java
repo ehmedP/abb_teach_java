@@ -3,6 +3,7 @@ package service;
 import enums.FareTypeEnum;
 import enums.TransportTypeEnum;
 import model.*;
+import util.TimeUtil;
 
 public class TransportManager {
 
@@ -21,6 +22,13 @@ public class TransportManager {
 
     public void startTransportProcess() {
 
+//         NOT IMPORTANT
+
+//         burda eslinde etmek istediyim masinlarin benzini veya scooterlerin batereyyasi var. buna esasen hesablama etmek istemisdim
+//         baslama, catma, benzin qutarmasi vs kimi hallar nezere almaq isteyirdim amma taskdan cox kenara cixir deye burda saxladim
+//
+//         yenede genislendirile biler eslinde amma tasklardan cox kenara cixmaq istemirem.
+
     }
 
     public void printTransportInfo() {
@@ -31,7 +39,7 @@ public class TransportManager {
         System.out.println("Distance  : " + distance + " km");
         System.out.println("Passengers: " + passengers);
         System.out.println("Fare      : " + this.transportVehicle.calculateFare(distance, passengers, fareType));
-        System.out.println("Time      : " + this.transportVehicle.calculateTime(distance) + " hours");
+        System.out.println("Time      : " + TimeUtil.formatHours(this.transportVehicle.calculateTime(distance)));
         System.out.println("-------------------------------------------------------------------------------------------");
         System.out.println();
     }
