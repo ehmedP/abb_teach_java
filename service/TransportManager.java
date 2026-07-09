@@ -26,7 +26,8 @@ public class TransportManager {
     public void printTransportInfo() {
         System.out.println();
         System.out.println("-------------------------------------- Travel Summary -------------------------------------");
-        System.out.println("Transport : " + this.transportVehicle.getTransportInfo());
+        System.out.println("Transport : \n");
+        System.out.println(this.transportVehicle.getTransportInfo());
         System.out.println("Distance  : " + distance + " km");
         System.out.println("Passengers: " + passengers);
         System.out.println("Fare      : " + this.transportVehicle.calculateFare(distance, passengers, fareType));

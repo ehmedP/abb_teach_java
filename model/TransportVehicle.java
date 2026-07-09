@@ -66,7 +66,18 @@ public abstract class TransportVehicle implements Transport {
 
     @Override
     public String getTransportInfo() {
-        return "";
+        StringBuilder info = new StringBuilder();
+
+        info.append(String.format("=== %s Specifications ===\n", this.getClass().getSimpleName()))
+                .append(String.format("Max Speed            : %.1f km/h\n", speed))
+                .append(String.format("Max Range            : %.1f km\n", maxDistanceKm))
+                .append(String.format("Passenger Capacity   : %d\n", maxPassengerCount))
+                .append(String.format("Rate Per Kilometer   : $%.2f\n", ratePerKm));
+
+        if (fareType != null) {
+            info.append(String.format("Fare Type            : %s\n", fareType.name()));
+        }
+        return info.toString();
     }
 
     @Override
