@@ -2,7 +2,7 @@
 
 ## Texnologiya
 
-- **Java version:** JDK 24
+- **Java version:** JDK 26
 
 ## Təsvir
 
