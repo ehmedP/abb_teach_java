@@ -11,7 +11,7 @@ public abstract class ElectricVehicle extends TransportVehicle
     protected ElectricVehicle(double ratePerKm, double speed, int maxPassengerCount, double maxDistanceKm, double maxBatteryKWh) {
         super(ratePerKm, speed, maxPassengerCount, maxDistanceKm);
         this.maxBatteryKWh = maxBatteryKWh;
-        this.currentBatteryKWh = maxBatteryKWh; // tam dolu başlayır
+        this.currentBatteryKWh = maxBatteryKWh;
     }
 
     public double getMaxBatteryKWh() {

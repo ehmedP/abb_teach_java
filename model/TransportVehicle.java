@@ -49,7 +49,6 @@ public abstract class TransportVehicle implements Transport {
         return maxDistanceKm;
     }
 
-    // fare type-a görə əlavə haqq (null olarsa əlavə yoxdur)
     protected double fareExtra(FareTypeEnum fareTypeEnum) {
         return fareTypeEnum == null ? 0 : fareTypeEnum.getExtraFee();
     }

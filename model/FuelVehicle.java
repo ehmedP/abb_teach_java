@@ -11,7 +11,7 @@ public abstract class FuelVehicle extends TransportVehicle
     protected FuelVehicle(double ratePerKm, double speed, int maxPassengerCount, double maxDistanceKm, double maxFuelLiters) {
         super(ratePerKm, speed, maxPassengerCount, maxDistanceKm);
         this.maxFuelLiters = maxFuelLiters;
-        this.currentFuelLiters = maxFuelLiters; // dolu bak ile baslayir
+        this.currentFuelLiters = maxFuelLiters;
     }
 
     public double getMaxFuelLiters() {
