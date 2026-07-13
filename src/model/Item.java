@@ -73,17 +73,4 @@ public abstract class Item
         return isAvailable;
     }
 
-    // Setters
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public void setAvailable(boolean available) {
-        isAvailable = available;
-    }
 }

@@ -18,7 +18,7 @@ public class Library {
             expandLibrary();
         }
 
-        else if (item.getTitle().isBlank()) {
+        if (item.getTitle().isBlank()) {
             System.out.println("The title cannot be empty. Please enter a valid title.");
             return;
         }
