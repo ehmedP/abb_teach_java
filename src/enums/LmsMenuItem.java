@@ -3,7 +3,7 @@ package src.enums;
 public enum LmsMenuItem {
 
     ADD(1, "Add Item"),
-    SHOW(2, "Show All Items"),
+    SHOW(2, "Show Paginated Items"),
     SEARCH(3, "Search Item"),
     CHECKOUT(4, "Check Out Item"),
     RETURN(5, "Return Item"),

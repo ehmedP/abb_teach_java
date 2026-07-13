@@ -1,5 +1,7 @@
 package src.model;
 
+import src.util.Pagination;
+
 import java.util.Arrays;
 
 public class Library {
@@ -7,7 +9,7 @@ public class Library {
     public static final int LIBRARY_MAX_CAPACITY = 1000;
     public static final int LIBRARY_MIN_CAPACITY = 50;
 
-    private int itemCount = 0;
+    private Integer itemCount = 0;
     private Item[] items = new Item[LIBRARY_MIN_CAPACITY];
 
     public void addItem(Item item) {
@@ -26,7 +28,12 @@ public class Library {
 
     public void paginatedItems() {
 
+        if (itemCount == 0) {
+            System.out.println("There are no items in the library yet.");
+            return;
+        }
 
+        Pagination.paginatedItems(itemCount, items);
     }
 
     public void checkOutItem(int id) {

@@ -1,6 +1,9 @@
 package src.model;
 
-public abstract class Item {
+import src.interfaces.Paginatable;
+
+public abstract class Item
+    implements Paginatable {
 
     // States
 
@@ -20,6 +23,11 @@ public abstract class Item {
 
     // Default methods
 
+    @Override
+    public void displaySimpleInfo() {
+        System.out.println(getId() + ". " + getTitle() + ", Status: " + getAvailabilityText());
+    }
+
     public void checkOut() {
 
         if (!isAvailable) {
@@ -38,6 +46,17 @@ public abstract class Item {
         }
 
         isAvailable = true;
+    }
+
+    // Helpers
+
+    public String getAvailabilityText() {
+
+        if (this.isAvailable) {
+            return "Available";
+        }
+
+        return "Unavailable";
     }
 
     // Getters

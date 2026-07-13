@@ -6,7 +6,6 @@ import java.util.Scanner;
 
 public class LmsManager {
 
-    private static final int PAGINATION = 20;
     private static final Scanner globalScanner = new Scanner(System.in);
     private final Library library = new Library();
 
@@ -53,8 +52,7 @@ public class LmsManager {
     }
 
     private void handleShowProcess() {
-
-        printWaitEnterKey();
+        library.paginatedItems();
     }
 
     private void handleCheckoutProcess() {
@@ -116,8 +114,6 @@ public class LmsManager {
             String option = globalScanner.nextLine();
 
             LmsMenuItem menuItem = LmsMenuItem.fromCode(option);
-
-            System.out.println(menuItem);
 
             if (menuItem != null) {
                 return menuItem;
