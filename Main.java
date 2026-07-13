@@ -1,4 +1,4 @@
-import src.model.LmsManager;
+import src.service.LmsManager;
 
 void main() {
 

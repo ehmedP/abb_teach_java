@@ -1,6 +1,11 @@
-package src.model;
+package src.service;
 
+import src.enums.ItemTypeEnum;
 import src.enums.LmsMenuItem;
+import src.model.Book;
+import src.model.Item;
+import src.model.Library;
+import src.model.Magazine;
 
 import java.util.Scanner;
 
@@ -8,6 +13,7 @@ public class LmsManager {
 
     private static final Scanner globalScanner = new Scanner(System.in);
     private final Library library = new Library();
+    private final ItemManager itemManager = new ItemManager();
 
     public void execute() {
 
@@ -46,7 +52,9 @@ public class LmsManager {
 
     private void handleAddProcess() {
 
-        System.out.print("kitabxanaya kitab elave etmek ucun kitab melumatlarinin daxil edin.");
+        library.addItem(
+            itemManager.createItemByType(takeItemTypeOption())
+        );
 
         printWaitEnterKey();
     }
@@ -120,6 +128,32 @@ public class LmsManager {
             }
 
             System.out.println("Invalid menu option. Please try again.");
+        }
+    }
+
+    private ItemTypeEnum takeItemTypeOption() {
+
+        while (true) {
+
+            System.out.println("-------------------------------- Add New Item --------------------------------");
+            System.out.println("Select the type of item you would like to add:");
+
+            for (ItemTypeEnum item : ItemTypeEnum.values()) {
+                System.out.println(item.getValue() + ". " + item.getLabel() + " - " + item);
+            }
+
+            System.out.print("Enter book type (e.g. BOOK): ");
+
+            String option = globalScanner.nextLine();
+
+            ItemTypeEnum itemType = ItemTypeEnum.fromCode(option);
+
+            if (itemType != null) {
+                return itemType;
+            }
+
+            System.out.println("Invalid item type. Please enter BOOK or MAGAZINE.");
+            System.out.println();
         }
     }
 

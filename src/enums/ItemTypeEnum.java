@@ -2,13 +2,13 @@ package src.enums;
 
 public enum ItemTypeEnum {
 
-    BOOK("book", "Book"),
-    MAGAZINE("magazine", "Magazine");
+    BOOK(1, "Book"),
+    MAGAZINE(2, "Magazine");
 
     private final String label;
-    private final String value;
+    private final Integer value;
 
-    ItemTypeEnum(String value, String label) {
+    ItemTypeEnum(Integer value, String label) {
         this.label = label;
         this.value = value;
     }
@@ -17,7 +17,18 @@ public enum ItemTypeEnum {
         return label;
     }
 
-    public String getValue() {
+    public Integer getValue() {
         return value;
+    }
+
+    public static ItemTypeEnum fromCode(String code) {
+
+        for (ItemTypeEnum item : values()) {
+            if (item.name().equalsIgnoreCase(code.trim())) {
+                return item;
+            }
+        }
+
+        return null;
     }
 }
