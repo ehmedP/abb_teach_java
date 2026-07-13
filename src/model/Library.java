@@ -17,7 +17,7 @@ public class Library {
         }
 
         else if (item.getTitle().isBlank()) {
-            System.out.println("Kitab ucun basliq bosh ola bilmez.");
+            System.out.println("The title cannot be empty. Please enter a valid title.");
             return;
         }
 
@@ -33,11 +33,12 @@ public class Library {
         Item found = this.getItemById(id);
 
         if (found == null) {
-            System.out.println("Kitab kitabxanada movcud deyil.");
+            System.out.println("No item was found with the specified ID.");
             return;
         }
 
         found.checkOut();
+        System.out.println("The item has been checked out successfully.");
     }
 
     public void returnItem(int id) {
@@ -45,11 +46,12 @@ public class Library {
         Item found = this.getItemById(id);
 
         if (found == null) {
-            System.out.println("Kitab kitabxanada movcud deyil.");
+            System.out.println("No item was found with the specified ID.");
             return;
         }
 
         found.returnItem();
+        System.out.println("The item has been returned successfully.");
     }
 
     public Item searchByTitle(String keyword) {
@@ -83,7 +85,7 @@ public class Library {
         }
 
         if (items.length >= LIBRARY_MAX_CAPACITY) {
-            System.out.println("Kitabxana maksimum tutuma çatmışdır.");
+            System.out.println("The library has reached its maximum capacity. No more items can be added.");
             return;
         }
 

@@ -6,8 +6,9 @@ import java.util.Scanner;
 
 public class LmsManager {
 
+    private static final int PAGINATION = 20;
     private static final Scanner globalScanner = new Scanner(System.in);
-    private static final Library library = new Library();
+    private final Library library = new Library();
 
     public void execute() {
 
@@ -46,22 +47,57 @@ public class LmsManager {
 
     private void handleAddProcess() {
 
+        System.out.print("kitabxanaya kitab elave etmek ucun kitab melumatlarinin daxil edin.");
+
+        printWaitEnterKey();
     }
 
     private void handleShowProcess() {
 
+        printWaitEnterKey();
     }
 
     private void handleCheckoutProcess() {
 
+        System.out.print("Enter the ID of the item you want to check out: ");
+
+        library.checkOutItem(globalScanner.nextInt());
+        globalScanner.nextLine();
+
+        printWaitEnterKey();
     }
 
     private void handleReturnProcess() {
 
+        System.out.print("Enter the ID of the item you want to return: ");
+
+        library.returnItem(globalScanner.nextInt());
+        globalScanner.nextLine();
+
+        printWaitEnterKey();
     }
 
     private void handleSearchProcess() {
 
+        System.out.print("Enter the title of the item you want to search: ");
+        String keyword = globalScanner.nextLine();
+
+        Item item = library.searchByTitle(keyword);
+
+        if (item == null) {
+            System.out.println("No item found with the title \"" + keyword + "\".");
+            return;
+        }
+
+        item.displayInfo();
+
+        printWaitEnterKey();
+    }
+
+    private void printWaitEnterKey() {
+        System.out.println();
+        System.out.print("Press Enter to return to the main menu...");
+        globalScanner.nextLine();
     }
 
     private LmsMenuItem takeMainMenuOption() {

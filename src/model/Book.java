@@ -32,6 +32,15 @@ public class Book extends Item {
     @Override
     public void displayInfo() {
 
+        System.out.println();
+        System.out.println("---------------------------------------- Book Info ----------------------------------------");
+        System.out.printf("ID        : %d%n", getId());
+        System.out.printf("Title     : %s%n", getTitle());
+        System.out.printf("Author    : %s%n", author);
+        System.out.printf("Pages     : %d%n", pages);
+        System.out.printf("Status    : %s%n", getIsAvailable() ? "Available" : "Checked out");
+        System.out.println("-------------------------------------------------------------------------------------------");
+        System.out.println();
     }
 
 }

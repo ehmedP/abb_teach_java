@@ -23,7 +23,7 @@ public abstract class Item {
     public void checkOut() {
 
         if (!isAvailable) {
-            System.out.println("Item is already checked out.");
+            System.out.println("This item is already checked out.");
             return;
         }
 
@@ -33,7 +33,7 @@ public abstract class Item {
     public void returnItem() {
 
         if (isAvailable) {
-            System.out.println("Item is already available.");
+            System.out.println("This item is already available.");
             return;
         }
 
