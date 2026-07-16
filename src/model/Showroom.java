@@ -52,7 +52,17 @@ public class Showroom {
 
     public Vehicle searchByModel(String keyword) {
 
-        System.out.println();
+        for (Vehicle vehicle : vehicles) {
+
+            if (vehicle.getName().equals(keyword)) {
+
+                return vehicle;
+            }
+        }
+
+        System.out.println("Vehicle is not found in show room.");
+
+        return null;
     }
 
     public Vehicle findById(Integer id) {
