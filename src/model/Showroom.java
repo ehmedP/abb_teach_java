@@ -2,13 +2,24 @@ package src.model;
 
 public class Showroom {
 
-    private Vehicle[] vehicles;
+    private final Integer MAX_CAR_COUNT = 50;
+
+    private Vehicle[] vehicles = new Vehicle[MAX_CAR_COUNT];
     private Integer carCount = 0;
 
     public Showroom() {
     }
 
     public void addVehicle(Vehicle vehicle) {
+
+        if (carCount.equals(MAX_CAR_COUNT)) {
+            System.out.println("Show room is full.");
+            return;
+        }
+
+        vehicles[carCount++] = vehicle;
+
+        System.out.println("Vehicle added process successful");
     }
 
     public void showAllVehicles() {
