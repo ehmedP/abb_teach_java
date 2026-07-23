@@ -56,6 +56,10 @@ public class BookCopy {
         return status;
     }
 
+    public boolean isBorrowed() {
+        return this.status == CopyStatusEnum.BORROWED;
+    }
+
     public void setStatus(CopyStatusEnum status) {
         this.status = status;
     }

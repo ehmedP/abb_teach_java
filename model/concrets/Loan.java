@@ -1,7 +1,6 @@
 package model.concrets;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.Objects;
 
 public class Loan {
@@ -10,11 +9,11 @@ public class Loan {
     private String loanId;
     private BookCopy bookCopy;
     private Member member;
-    private Date borrowDay;
+    private LocalDate borrowDay;
     private LocalDate dueDay;
     private Boolean returned;
 
-    public Loan(Integer id, String loanId, BookCopy bookCopy, Member member, Date borrowDay, LocalDate dueDay, Boolean returned) {
+    public Loan(Integer id, String loanId, BookCopy bookCopy, Member member, LocalDate borrowDay, LocalDate dueDay, Boolean returned) {
         this.id = id;
         this.loanId = loanId;
         this.bookCopy = bookCopy;
@@ -56,11 +55,11 @@ public class Loan {
         this.member = member;
     }
 
-    public Date getBorrowDay() {
+    public LocalDate getBorrowDay() {
         return borrowDay;
     }
 
-    public void setBorrowDay(Date borrowDay) {
+    public void setBorrowDay(LocalDate borrowDay) {
         this.borrowDay = borrowDay;
     }
 

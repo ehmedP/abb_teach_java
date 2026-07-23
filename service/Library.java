@@ -1,5 +1,6 @@
 package service;
 
+import enums.BookGenreEnum;
 import model.concrets.*;
 import util.DisplayHelper;
 
@@ -34,6 +35,44 @@ public class Library {
 
     public Library() {
 
+    }
+
+    public void addBook(Book book) {
+        books.add(book);
+        booksByGenre.computeIfAbsent(book.getGenre().getLabel(), k -> new HashSet<>()).add(book);
+    }
+
+    public void addBranch(Branch branch) {
+        branches.put(branch.getBranchId(), branch);
+    }
+
+    public void addLoan(Loan loan) {
+        loanList.add(loan);
+        memberLoans.computeIfAbsent(loan.getMember(), k -> new ArrayList<>()).add(loan);
+    }
+
+    public void addFineRecord(FineRecord record) {
+        fineRecords.add(record);
+    }
+
+    public void addReservation(String bookId, Reservation reservation) {
+        reservationsByBook.computeIfAbsent(bookId, k -> new PriorityQueue<>()).add(reservation);
+    }
+
+    public void addNotification(Member member, Notification notification) {
+        memberNotifications.computeIfAbsent(member, k -> new LinkedList<>()).add(notification);
+    }
+
+    public void recordMemberActivity(Member member, int count) {
+        memberActivityCounter.merge(member, count, Integer::sum);
+    }
+
+    public void recordBookPopularity(Book book, int count) {
+        bookPopularityCounter.merge(book, count, Integer::sum);
+    }
+
+    public void addTransferRecord(String record) {
+        lastTransfers.push(record);
     }
 
     public boolean borrowBook(Member m, String bookId, String branchId, int currentDay) {
@@ -84,15 +123,26 @@ public class Library {
 
         // TODO: this process isn't done
         int totalBookCount = 0,
-            uniqueGenreCount = 0,
-            activeLoanCount = 0,
-            lateLoanCount = 0;
+                activeLoanCount = 0,
+                lateLoanCount = 0;
+
+        Set<BookGenreEnum> uniqueGenres = new HashSet<>();
 
         for (List<BookCopy> copies : branch.getBookCopies().values()) {
             totalBookCount += copies.size();
+
+            for (BookCopy copy : copies) {
+                uniqueGenres.add(copy.getBook().getGenre());
+            }
         }
 
-        DisplayHelper.printBranchReport(branch, totalBookCount, uniqueGenreCount, activeLoanCount, lateLoanCount);
+        DisplayHelper.printBranchReport(
+                branch,
+                totalBookCount,
+                uniqueGenres.size(),
+                activeLoanCount,
+                lateLoanCount
+        );
     }
 
     public List<Member> getTopActiveMembers(int topN) {
