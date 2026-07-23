@@ -4,21 +4,21 @@ import java.util.Objects;
 
 public class Branch {
 
-    private Integer branchId;
+    private String branchId;
     private String name;
     private String address;
 
-    public Branch(Integer branchId, String name, String address) {
+    public Branch(String branchId, String name, String address) {
         this.branchId = branchId;
         this.name = name;
         this.address = address;
     }
 
-    public Integer getBranchId() {
+    public String getBranchId() {
         return branchId;
     }
 
-    public void setBranchId(Integer branchId) {
+    public void setBranchId(String branchId) {
         this.branchId = branchId;
     }
 
@@ -42,14 +42,12 @@ public class Branch {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Branch branch = (Branch) o;
-        return Objects.equals(getBranchId(), branch.getBranchId()) &&
-                Objects.equals(getName(), branch.getName()) &&
-                Objects.equals(getAddress(), branch.getAddress());
+        return Objects.equals(getBranchId(), branch.getBranchId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getBranchId(), getName(), getAddress());
+        return Objects.hash(getBranchId());
     }
 
     @Override

@@ -5,6 +5,7 @@ import java.util.Objects;
 
 public class FineRecord {
 
+    private Integer id;
     private Member member;
     private Double amount;
     private String reason;
@@ -15,6 +16,14 @@ public class FineRecord {
         this.amount = amount;
         this.reason = reason;
         this.day = day;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public Member getMember() {
@@ -53,15 +62,12 @@ public class FineRecord {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         FineRecord that = (FineRecord) o;
-        return Objects.equals(getMember(), that.getMember()) &&
-                Objects.equals(getAmount(), that.getAmount()) &&
-                Objects.equals(getReason(), that.getReason()) &&
-                Objects.equals(getDay(), that.getDay());
+        return Objects.equals(getId(), that.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getMember(), getAmount(), getReason(), getDay());
+        return Objects.hash(getId());
     }
 
     @Override

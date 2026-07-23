@@ -54,14 +54,12 @@ public class BookCopy {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         BookCopy bookCopy = (BookCopy) o;
-        return Objects.equals(getCopyId(), bookCopy.getCopyId()) &&
-                Objects.equals(getBook(), bookCopy.getBook()) &&
-                Objects.equals(getBranchId(), bookCopy.getBranchId()) && getStatus() == bookCopy.getStatus();
+        return Objects.equals(getCopyId(), bookCopy.getCopyId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getCopyId(), getBook(), getBranchId(), getStatus());
+        return Objects.hash(getCopyId());
     }
 
     @Override

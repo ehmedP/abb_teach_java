@@ -73,17 +73,12 @@ public class Loan {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Loan loan = (Loan) o;
-        return Objects.equals(getLoanId(), loan.getLoanId()) &&
-                Objects.equals(getBookCopy(), loan.getBookCopy()) &&
-                Objects.equals(getMember(), loan.getMember()) &&
-                Objects.equals(getBorrowDay(), loan.getBorrowDay()) &&
-                Objects.equals(getDueDay(), loan.getDueDay()) &&
-                Objects.equals(getReturned(), loan.getReturned());
+        return Objects.equals(getLoanId(), loan.getLoanId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getLoanId(), getBookCopy(), getMember(), getBorrowDay(), getDueDay(), getReturned());
+        return Objects.hash(getLoanId());
     }
 
     @Override

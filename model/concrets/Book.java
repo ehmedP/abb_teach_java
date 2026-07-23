@@ -1,5 +1,7 @@
 package model.concrets;
 
+import enums.BookGenreEnum;
+
 import java.util.Objects;
 
 public class Book {
@@ -7,10 +9,10 @@ public class Book {
     private Integer id;
     private String title;
     private String author;
-    private String genre;
+    private BookGenreEnum genre;
     private Integer isbn;
 
-    public Book(Integer id, String title, String author, String genre, Integer isbn) {
+    public Book(Integer id, String title, String author, BookGenreEnum genre, Integer isbn) {
         this.id = id;
         this.title = title;
         this.author = author;
@@ -42,11 +44,11 @@ public class Book {
         this.author = author;
     }
 
-    public String getGenre() {
+    public BookGenreEnum getGenre() {
         return genre;
     }
 
-    public void setGenre(String genre) {
+    public void setGenre(BookGenreEnum genre) {
         this.genre = genre;
     }
 
@@ -62,17 +64,12 @@ public class Book {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Book book = (Book) o;
-        return Objects.equals(getId(), book.getId()) &&
-                Objects.equals(getTitle(), book.getTitle()) &&
-                Objects.equals(getAuthor(), book.getAuthor()) &&
-                Objects.equals(getGenre(), book.getGenre()) &&
-                Objects.equals(getIsbn(), book.getIsbn()
-                );
+        return Objects.equals(getId(), book.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getTitle(), getAuthor(), getGenre(), getIsbn());
+        return Objects.hash(getId());
     }
 
     @Override
