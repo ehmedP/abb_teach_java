@@ -1,27 +1,28 @@
 package src.model;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
 
 public class Bus {
 
     public final Integer MAX_PASSENGER_CAPACITY = 5;
 
-    private ArrayList<Passenger> passengers = new ArrayList<>();
+    private List<Passenger> passengers = new LinkedList<>();
 
     public Bus() {
         //
     }
 
-    public Bus(ArrayList<Passenger> passengers) {
+    public Bus(List<Passenger> passengers) {
         this.passengers = passengers;
     }
 
-    public ArrayList<Passenger> getPassengers() {
+    public List<Passenger> getPassengers() {
         return passengers;
     }
 
-    public void setPassengers(ArrayList<Passenger> passengers) {
+    public void setPassengers(List<Passenger> passengers) {
         this.passengers = passengers;
     }
 

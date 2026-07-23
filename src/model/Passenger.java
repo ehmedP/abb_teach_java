@@ -30,6 +30,10 @@ public class Passenger {
         this.name = name;
     }
 
+    public boolean isPriorityPassenger() {
+        return priorityType == PassengerPriorityTypeEnum.NONE;
+    }
+
     @Override
     public String toString() {
         return name + " " + String.format("(%s)", priorityType.getLabel());
