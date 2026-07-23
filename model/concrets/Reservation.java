@@ -1,0 +1,76 @@
+package model.concrets;
+
+import java.util.Date;
+import java.util.Objects;
+
+public class Reservation {
+
+    private Member member;
+    private Book book;
+    private Date reservationDay;
+    private Integer priorityScore;
+
+    public Reservation(Member member, Book book, Date reservationDay, Integer priorityScore) {
+        this.member = member;
+        this.book = book;
+        this.reservationDay = reservationDay;
+        this.priorityScore = priorityScore;
+    }
+
+    public Member getMember() {
+        return member;
+    }
+
+    public void setMember(Member member) {
+        this.member = member;
+    }
+
+    public Book getBook() {
+        return book;
+    }
+
+    public void setBook(Book book) {
+        this.book = book;
+    }
+
+    public Date getReservationDay() {
+        return reservationDay;
+    }
+
+    public void setReservationDay(Date reservationDay) {
+        this.reservationDay = reservationDay;
+    }
+
+    public Integer getPriorityScore() {
+        return priorityScore;
+    }
+
+    public void setPriorityScore(Integer priorityScore) {
+        this.priorityScore = priorityScore;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Reservation that = (Reservation) o;
+        return Objects.equals(getMember(), that.getMember()) &&
+                Objects.equals(getBook(), that.getBook()) &&
+                Objects.equals(getReservationDay(), that.getReservationDay()) &&
+                Objects.equals(getPriorityScore(), that.getPriorityScore());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getMember(), getBook(), getReservationDay(), getPriorityScore());
+    }
+
+    @Override
+    public String toString() {
+        return "Reservation{" +
+                "member=" + member +
+                ", book=" + book +
+                ", reservationDay=" + reservationDay +
+                ", priorityScore=" + priorityScore +
+                '}';
+    }
+}
