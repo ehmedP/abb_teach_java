@@ -18,7 +18,7 @@ public class BusStop {
 
         System.out.printf("Stop \"%s\" reached.%n", getName());
 
-        leftPassengers(bus);
+        leftPassengersFromBus(bus);
         boardedPassengers(bus);
 
         System.out.println("Bus now: " + bus);
@@ -29,18 +29,32 @@ public class BusStop {
 
     }
 
-    private void leftPassengers(Bus bus) {
-        List<Passenger> busPassengers = bus.getPassengers();
+    private void leftPassengersFromBus(Bus bus) {
+        PassengerLeaveResult leftPassengers = leftPassengers(bus.getPassengers());
 
-        if (busPassengers.isEmpty()) {
-            return;
+        for (Passenger passenger : leftPassengers.leftPassengers()) {
+            System.out.println(passenger + " left the bus.");
         }
 
-        int leaveCount = random.nextInt(busPassengers.size() + 1);
+        bus.setPassengers(leftPassengers.remainingPassengers());
+    }
+
+    private void leftPassengersFromStop(BusStop busStop) {
+        PassengerLeaveResult leftPassengers = leftPassengers(getPassengers());
+        setPassengers(leftPassengers.remainingPassengers());
+    }
+
+    private PassengerLeaveResult leftPassengers(List<Passenger> passengers) {
+
+        if (passengers.isEmpty()) {
+            return new PassengerLeaveResult(passengers, new ArrayList<>());
+        }
+
+        int leaveCount = random.nextInt(passengers.size() + 1);
         List<Passenger> leftPassengers = new LinkedList<>();
 
         for (int i = 0; i < leaveCount; i++) {
-            Passenger passenger = busPassengers.remove(random.nextInt(busPassengers.size()));
+            Passenger passenger = passengers.remove(random.nextInt(passengers.size()));
 
             if (passenger.isPriorityPassenger()) {
                 leftPassengers.addFirst(passenger);
@@ -48,16 +62,12 @@ public class BusStop {
                 leftPassengers.add(passenger);
             }
 
-            if (busPassengers.isEmpty()) {
+            if (passengers.isEmpty()) {
                 break;
             }
         }
 
-        for (Passenger passenger : leftPassengers) {
-            System.out.println(passenger + " left the bus.");
-        }
-
-        bus.setPassengers(busPassengers);
+        return new PassengerLeaveResult(passengers, leftPassengers);
     }
 
     private void boardedPassengers(Bus bus) {
