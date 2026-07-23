@@ -138,4 +138,4 @@ Final passengers in bus:
 
 Example execution of the program:
 
-![Terminal Output](image.png)
+![Terminal Output](images/img.png)
