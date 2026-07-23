@@ -44,14 +44,12 @@ public abstract class LibraryUser {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         LibraryUser that = (LibraryUser) o;
-        return Objects.equals(getId(), that.getId()) &&
-                Objects.equals(getName(), that.getName()) &&
-                Objects.equals(getEmail(), that.getEmail());
+        return Objects.equals(getId(), that.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getName(), getEmail());
+        return Objects.hash(getId());
     }
 
     @Override

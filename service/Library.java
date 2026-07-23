@@ -1,6 +1,5 @@
 package service;
 
-import enums.NotificationTypeEnum;
 import model.concrets.*;
 import util.DisplayHelper;
 
@@ -76,17 +75,7 @@ public class Library {
             }
 
             while (!notifications.isEmpty()) {
-                Notification notification = notifications.peek();
-
-                if (notification.getDay().isEqual(date)) {
-                    notifications.poll();
-
-                    DisplayHelper.printNotification(member, notification);
-                }
-
-                else {
-                    break;
-                }
+                DisplayHelper.printNotification(member, notifications.poll());
             }
 
         });

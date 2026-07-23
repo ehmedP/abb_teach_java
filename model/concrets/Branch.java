@@ -1,5 +1,7 @@
 package model.concrets;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class Branch {
@@ -7,11 +9,21 @@ public class Branch {
     private String branchId;
     private String name;
     private String address;
+    private Map<String, List<BookCopy>> bookCopies;
 
-    public Branch(String branchId, String name, String address) {
+    public Branch(String branchId, String name, String address, Map<String, List<BookCopy>> bookCopies) {
         this.branchId = branchId;
         this.name = name;
         this.address = address;
+        this.bookCopies = bookCopies;
+    }
+
+    public Map<String, List<BookCopy>> getBookCopies() {
+        return bookCopies;
+    }
+
+    public void setBookCopies(Map<String, List<BookCopy>> bookCopies) {
+        this.bookCopies = bookCopies;
     }
 
     public String getBranchId() {
