@@ -15,29 +15,11 @@ public class BusRouteManager {
 
         System.out.println("✅ Simulation started.");
 
-        for (int i = 0; i < stops.size(); i++) {
-            nextStop();
+        for (BusStop stop : stops) {
+            stop.arriveStop(bus);
         }
 
         System.out.println("✅ Simulation finished.");
-    }
-
-    public void nextStop() {
-
-        for (BusStop stop : stops) {
-
-            System.out.println("----------------------------------------------------------------------------------------");
-
-            System.out.printf("Stop %s reached.%n", stop.getName());
-
-            System.out.println("Bus now: "+ bus);
-
-            System.out.printf("Stop %d remaining: ", stop.getId());
-            System.out.println(stop.getPassengers());
-
-            System.out.println("----------------------------------------------------------------------------------------");
-        }
-
     }
 
     public BusRouteManager() {

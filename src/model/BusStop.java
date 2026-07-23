@@ -11,6 +11,21 @@ public class BusStop {
     private String name;
     private ArrayList<Passenger> passengers;
 
+    public void arriveStop(Bus bus) {
+
+        System.out.println("----------------------------------------------------------------------------------------");
+
+        System.out.printf("Stop \"%s\" reached.%n", getName());
+
+        System.out.println("Bus now: "+ bus);
+
+        System.out.printf("Stop %d remaining: ", getId());
+        System.out.println(getPassengers());
+
+        System.out.println("----------------------------------------------------------------------------------------");
+
+    }
+
     public BusStop(Integer id, String name, ArrayList<Passenger> passengers) {
         this.id = id;
         this.name = name;
