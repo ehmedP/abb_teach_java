@@ -31,7 +31,7 @@ public class Passenger {
     }
 
     public boolean isPriorityPassenger() {
-        return priorityType == PassengerPriorityTypeEnum.NONE;
+        return priorityType != PassengerPriorityTypeEnum.NONE;
     }
 
     @Override

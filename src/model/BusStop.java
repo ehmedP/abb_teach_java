@@ -4,7 +4,8 @@ import java.util.*;
 
 public class BusStop {
 
-    public static final Integer MAX_PASSENGER_COUNT = 10;
+    public static final int MAX_PASSENGER_COUNT = 10;
+    public static final int MAX_BUS_STOP_COUNT = 5;
 
     private static final Random random = new Random();
 
@@ -18,10 +19,19 @@ public class BusStop {
 
         System.out.printf("Stop \"%s\" reached.%n", getName());
 
+        System.out.println();
+        System.out.println("Bus (Passengers): " + bus);
+        System.out.println("Bus Stop (Passengers): " + passengers);
+        System.out.println();
+
+
         leftPassengersFromBus(bus);
         boardedPassengers(bus);
 
-        System.out.println("Bus now: " + bus);
+        System.out.println();
+        System.out.println("Bus (Passengers): " + bus);
+        System.out.println("Bus Stop (Passengers): " + passengers);
+        System.out.println();
 
         System.out.printf("Stop %d remaining: %s%n", getId(), getPassengers());
 
@@ -64,13 +74,13 @@ public class BusStop {
 
         int leaveCount = random.nextInt(passengers.size() + 1);
 
-        List<Passenger> shuffled = new ArrayList<>(passengers);
-        Collections.shuffle(shuffled);
-
+        List<Passenger> clonedPassengers = new ArrayList<>(passengers);
         List<Passenger> selected = new LinkedList<>();
 
+        Collections.shuffle(clonedPassengers);
+
         for (int i = 0; i < leaveCount; i++) {
-            Passenger passenger = shuffled.get(i);
+            Passenger passenger = clonedPassengers.get(i);
 
             if (passenger.isPriorityPassenger()) {
                 selected.addFirst(passenger);

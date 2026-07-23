@@ -37,7 +37,7 @@ public class BusRouteSeeder {
     }
 
     public List<BusStop> execute() {
-        return execute(5, BusStop.MAX_PASSENGER_COUNT);
+        return execute(BusStop.MAX_BUS_STOP_COUNT, BusStop.MAX_PASSENGER_COUNT);
     }
 
 }
