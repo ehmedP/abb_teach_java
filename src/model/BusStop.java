@@ -30,49 +30,58 @@ public class BusStop {
     }
 
     private void leftPassengersFromBus(Bus bus) {
-        PassengerLeaveResult leftPassengers = leftPassengers(bus.getPassengers());
+        List<Passenger> selected = pickRandomPassengers(bus.getPassengers());
 
-        for (Passenger passenger : leftPassengers.leftPassengers()) {
+        for (Passenger passenger : selected) {
             System.out.println(passenger + " left the bus.");
+            bus.getPassengers().remove(passenger);
         }
-
-        bus.setPassengers(leftPassengers.remainingPassengers());
-    }
-
-    private void leftPassengersFromStop(BusStop busStop) {
-        PassengerLeaveResult leftPassengers = leftPassengers(getPassengers());
-        setPassengers(leftPassengers.remainingPassengers());
-    }
-
-    private PassengerLeaveResult leftPassengers(List<Passenger> passengers) {
-
-        if (passengers.isEmpty()) {
-            return new PassengerLeaveResult(passengers, new ArrayList<>());
-        }
-
-        int leaveCount = random.nextInt(passengers.size() + 1);
-        List<Passenger> leftPassengers = new LinkedList<>();
-
-        for (int i = 0; i < leaveCount; i++) {
-            Passenger passenger = passengers.remove(random.nextInt(passengers.size()));
-
-            if (passenger.isPriorityPassenger()) {
-                leftPassengers.addFirst(passenger);
-            } else {
-                leftPassengers.add(passenger);
-            }
-
-            if (passengers.isEmpty()) {
-                break;
-            }
-        }
-
-        return new PassengerLeaveResult(passengers, leftPassengers);
     }
 
     private void boardedPassengers(Bus bus) {
-        int passengerCount = random.nextInt(MAX_PASSENGER_COUNT + 1);
+        List<Passenger> selected = pickRandomPassengers(getPassengers());
 
+        for (Passenger passenger : selected) {
+
+            if (bus.getPassengers().size() >= Bus.MAX_PASSENGER_CAPACITY) {
+                System.out.println("Bus is full. " + passenger + " cannot board the bus.");
+            }
+
+            else {
+                System.out.println(passenger + " boarded the bus.");
+
+                getPassengers().remove(passenger);
+                bus.getPassengers().add(passenger);
+            }
+        }
+    }
+
+    private List<Passenger> pickRandomPassengers(List<Passenger> passengers) {
+
+        if (passengers.isEmpty()) {
+            return new LinkedList<>();
+        }
+
+        int leaveCount = random.nextInt(passengers.size() + 1);
+
+        List<Passenger> shuffled = new ArrayList<>(passengers);
+        Collections.shuffle(shuffled);
+
+        List<Passenger> selected = new LinkedList<>();
+
+        for (int i = 0; i < leaveCount; i++) {
+            Passenger passenger = shuffled.get(i);
+
+            if (passenger.isPriorityPassenger()) {
+                selected.addFirst(passenger);
+            }
+
+            else {
+                selected.add(passenger);
+            }
+        }
+
+        return selected;
     }
 
     public BusStop(Integer id, String name, List<Passenger> passengers) {

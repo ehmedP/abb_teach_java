@@ -6,7 +6,7 @@ import java.util.Objects;
 
 public class Bus {
 
-    public final Integer MAX_PASSENGER_CAPACITY = 5;
+    public static final Integer MAX_PASSENGER_CAPACITY = 5;
 
     private List<Passenger> passengers = new LinkedList<>();
 
