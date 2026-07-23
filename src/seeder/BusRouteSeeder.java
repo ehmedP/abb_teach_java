@@ -14,13 +14,13 @@ public class BusRouteSeeder {
     private final Random random = new Random();
 
     public List<BusStop> execute(int stopCount, int maxPassengersPerStop) {
-        List<BusStop> stops = new ArrayList<>();
+        List<BusStop> stops = new LinkedList<>();
         PassengerPriorityTypeEnum[] priorityTypes = PassengerPriorityTypeEnum.values();
 
         int globalPassengerCounter = 1;
 
         for (int index = 0; index < stopCount; index++) {
-            ArrayList<Passenger> passengers = new ArrayList<>();
+            List<Passenger> passengers = new LinkedList<>();
             int passengerCount = random.nextInt(maxPassengersPerStop) + 1;
 
             for (int j = 0; j < passengerCount; j++) {

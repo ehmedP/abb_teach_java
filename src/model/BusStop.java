@@ -44,8 +44,9 @@ public class BusStop {
 
         for (Passenger passenger : selected) {
             System.out.println(passenger + " left the bus.");
-            bus.getPassengers().remove(passenger);
         }
+
+        bus.getPassengers().removeAll(selected);
     }
 
     private void boardedPassengers(Bus bus) {
@@ -74,6 +75,7 @@ public class BusStop {
 
         int leaveCount = random.nextInt(passengers.size() + 1);
 
+        // Array list isletmekde meqsed index esasli islediyi ucun get ve shuffle processlerinin daha suretli olmasidir.
         List<Passenger> clonedPassengers = new ArrayList<>(passengers);
         List<Passenger> selected = new LinkedList<>();
 
