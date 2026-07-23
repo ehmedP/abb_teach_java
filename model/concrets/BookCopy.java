@@ -6,24 +6,34 @@ import java.util.Objects;
 
 public class BookCopy {
 
-    private Integer copyId;
+    private Integer id;
+    private String copyId;
     private Book book;
-    private Integer branchId;
+    private String branchId;
     private CopyStatusEnum status;
 
-    public BookCopy(Integer copyId, Book book, Integer branchId, CopyStatusEnum status) {
+    public BookCopy(Integer id, String copyId, Book book, String branchId, CopyStatusEnum status) {
+        this.id = id;
         this.copyId = copyId;
         this.book = book;
         this.branchId = branchId;
         this.status = status;
     }
 
-    public Integer getCopyId() {
+    public String getCopyId() {
         return copyId;
     }
 
-    public void setCopyId(Integer copyId) {
+    public void setCopyId(String copyId) {
         this.copyId = copyId;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public Book getBook() {
@@ -34,11 +44,11 @@ public class BookCopy {
         this.book = book;
     }
 
-    public Integer getBranchId() {
+    public String getBranchId() {
         return branchId;
     }
 
-    public void setBranchId(Integer branchId) {
+    public void setBranchId(String branchId) {
         this.branchId = branchId;
     }
 
@@ -54,12 +64,12 @@ public class BookCopy {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         BookCopy bookCopy = (BookCopy) o;
-        return Objects.equals(getCopyId(), bookCopy.getCopyId());
+        return Objects.equals(getId(), bookCopy.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getCopyId());
+        return Objects.hash(getId());
     }
 
     @Override

@@ -1,6 +1,6 @@
 package model.concrets;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.Objects;
 
 public class Reservation {
@@ -8,10 +8,10 @@ public class Reservation {
     private Integer id;
     private Member member;
     private Book book;
-    private Date reservationDay;
+    private LocalDate reservationDay;
     private Integer priorityScore;
 
-    public Reservation(Member member, Book book, Date reservationDay, Integer priorityScore) {
+    public Reservation(Member member, Book book, LocalDate reservationDay, Integer priorityScore) {
         this.member = member;
         this.book = book;
         this.reservationDay = reservationDay;
@@ -42,11 +42,11 @@ public class Reservation {
         this.book = book;
     }
 
-    public Date getReservationDay() {
+    public LocalDate getReservationDay() {
         return reservationDay;
     }
 
-    public void setReservationDay(Date reservationDay) {
+    public void setReservationDay(LocalDate reservationDay) {
         this.reservationDay = reservationDay;
     }
 

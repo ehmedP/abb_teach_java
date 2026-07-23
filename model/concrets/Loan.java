@@ -1,18 +1,21 @@
 package model.concrets;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Objects;
 
 public class Loan {
 
-    private Integer loanId;
+    private Integer id;
+    private String loanId;
     private BookCopy bookCopy;
     private Member member;
     private Date borrowDay;
-    private Date dueDay;
+    private LocalDate dueDay;
     private Boolean returned;
 
-    public Loan(Integer loanId, BookCopy bookCopy, Member member, Date borrowDay, Date dueDay, Boolean returned) {
+    public Loan(Integer id, String loanId, BookCopy bookCopy, Member member, Date borrowDay, LocalDate dueDay, Boolean returned) {
+        this.id = id;
         this.loanId = loanId;
         this.bookCopy = bookCopy;
         this.member = member;
@@ -21,11 +24,19 @@ public class Loan {
         this.returned = returned;
     }
 
-    public Integer getLoanId() {
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getLoanId() {
         return loanId;
     }
 
-    public void setLoanId(Integer loanId) {
+    public void setLoanId(String loanId) {
         this.loanId = loanId;
     }
 
@@ -53,11 +64,11 @@ public class Loan {
         this.borrowDay = borrowDay;
     }
 
-    public Date getDueDay() {
+    public LocalDate getDueDay() {
         return dueDay;
     }
 
-    public void setDueDay(Date dueDay) {
+    public void setDueDay(LocalDate dueDay) {
         this.dueDay = dueDay;
     }
 
@@ -73,12 +84,12 @@ public class Loan {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Loan loan = (Loan) o;
-        return Objects.equals(getLoanId(), loan.getLoanId());
+        return Objects.equals(getId(), loan.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getLoanId());
+        return Objects.hash(getId());
     }
 
     @Override

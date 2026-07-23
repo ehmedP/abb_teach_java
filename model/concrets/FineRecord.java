@@ -1,6 +1,6 @@
 package model.concrets;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.Objects;
 
 public class FineRecord {
@@ -9,9 +9,9 @@ public class FineRecord {
     private Member member;
     private Double amount;
     private String reason;
-    private Date day;
+    private LocalDate day;
 
-    public FineRecord(Member member, Double amount, String reason, Date day) {
+    public FineRecord(Member member, Double amount, String reason, LocalDate day) {
         this.member = member;
         this.amount = amount;
         this.reason = reason;
@@ -50,11 +50,11 @@ public class FineRecord {
         this.reason = reason;
     }
 
-    public Date getDay() {
+    public LocalDate getDay() {
         return day;
     }
 
-    public void setDay(Date day) {
+    public void setDay(LocalDate day) {
         this.day = day;
     }
 

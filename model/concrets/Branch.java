@@ -6,12 +6,14 @@ import java.util.Objects;
 
 public class Branch {
 
+    private Integer id;
     private String branchId;
     private String name;
     private String address;
     private Map<String, List<BookCopy>> bookCopies;
 
-    public Branch(String branchId, String name, String address, Map<String, List<BookCopy>> bookCopies) {
+    public Branch(Integer id, String branchId, String name, String address, Map<String, List<BookCopy>> bookCopies) {
+        this.id = id;
         this.branchId = branchId;
         this.name = name;
         this.address = address;
@@ -20,6 +22,14 @@ public class Branch {
 
     public Map<String, List<BookCopy>> getBookCopies() {
         return bookCopies;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public void setBookCopies(Map<String, List<BookCopy>> bookCopies) {
@@ -54,12 +64,12 @@ public class Branch {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Branch branch = (Branch) o;
-        return Objects.equals(getBranchId(), branch.getBranchId());
+        return Objects.equals(getId(), branch.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getBranchId());
+        return Objects.hash(getId());
     }
 
     @Override
