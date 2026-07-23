@@ -52,17 +52,67 @@ public class Library {
     }
 
     public List<Book> searchBooks(String keyword) {
-        // Implementation for searching books
-        return new ArrayList<>();
+
+        if (keyword.isBlank()) {
+            System.out.println("Keyword cannot be empty.");
+            return new ArrayList<>();
+        }
+
+        List<Book> result = new ArrayList<>();
+
+        for (Book book : books) {
+
+            for (String field : book.searchableFields()) {
+                if (field.toLowerCase().contains(keyword.toLowerCase())) {
+                    result.add(book);
+                }
+            }
+
+        }
+
+        return result;
     }
 
     public void generateBranchReport(String branchId) {
-        // Implementation for generating branch report
+
+        Branch branch = branches.get(branchId);
+
+        if (branch == null) {
+            System.out.println("Branch not found.");
+            return;
+        }
+
+        // TODO: this process isn't done
+        int totalBookCount = 0,
+            uniqueGenreCount = 0,
+            activeLoanCount = 0,
+            lateLoanCount = 0;
+
+        for (List<BookCopy> copies : branch.getBookCopies().values()) {
+            totalBookCount += copies.size();
+        }
+
+        DisplayHelper.printBranchReport(branch, totalBookCount, uniqueGenreCount, activeLoanCount, lateLoanCount);
     }
 
     public List<Member> getTopActiveMembers(int topN) {
-        // Implementation for getting top active members
-        return new ArrayList<>();
+
+        if (topN == 0) {
+            return new ArrayList<>();
+        }
+
+        List<Map.Entry<Member, Integer>> entries = new ArrayList<>(memberActivityCounter.entrySet());
+
+        entries.sort((e1, e2) -> e2.getValue().compareTo(e1.getValue()));
+
+        int topNLength = Math.min(topN, entries.size());
+        List<Member> topMembers = new ArrayList<>(topNLength);
+
+        for (int i = 0; i < topNLength; i++) {
+            topMembers.add(entries.get(i).getKey());
+        }
+
+        return topMembers;
     }
 
     public void processNotifications(LocalDate date) {
@@ -70,7 +120,7 @@ public class Library {
         memberNotifications.forEach((member, notifications) -> {
 
             if (notifications.isEmpty()) {
-                System.out.println("No notifications for member: " + member.getName());
+                DisplayHelper.noNotifications(member);
                 return;
             }
 

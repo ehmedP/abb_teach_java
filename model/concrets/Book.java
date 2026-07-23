@@ -20,6 +20,10 @@ public class Book {
         this.isbn = isbn;
     }
 
+    public String[] searchableFields() {
+        return new String[] {title, author, genre.getLabel()};
+    }
+
     public Integer getId() {
         return id;
     }
