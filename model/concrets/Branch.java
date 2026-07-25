@@ -1,20 +1,23 @@
 package model.concrets;
 
+import enums.CopyStatusEnum;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 public class Branch {
 
-    private Integer id;
-    private String branchId;
+    private static int nextId = 1;
+
+    private final Integer id;
     private String name;
     private String address;
     private Map<String, List<BookCopy>> bookCopies;
 
-    public Branch(Integer id, String branchId, String name, String address, Map<String, List<BookCopy>> bookCopies) {
-        this.id = id;
-        this.branchId = branchId;
+    public Branch(String name, String address, Map<String, List<BookCopy>> bookCopies) {
+        this.id = nextId++;
+
         this.name = name;
         this.address = address;
         this.bookCopies = bookCopies;
@@ -24,24 +27,28 @@ public class Branch {
         return bookCopies;
     }
 
+    public BookCopy findAvailableBookCopy(String bookId) {
+        List<BookCopy> copies = getBookCopies().get(bookId);
+
+        if (copies == null || copies.isEmpty()) {
+            return null;
+        }
+
+        for (BookCopy copy : copies) {
+            if (copy.getStatus() == CopyStatusEnum.AVAILABLE) {
+                return copy;
+            }
+        }
+
+        return null;
+    }
+
     public Integer getId() {
         return id;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
     public void setBookCopies(Map<String, List<BookCopy>> bookCopies) {
         this.bookCopies = bookCopies;
-    }
-
-    public String getBranchId() {
-        return branchId;
-    }
-
-    public void setBranchId(String branchId) {
-        this.branchId = branchId;
     }
 
     public String getName() {
@@ -75,9 +82,10 @@ public class Branch {
     @Override
     public String toString() {
         return "Branch{" +
-                "branchId=" + branchId +
+                "id=" + id +
                 ", name='" + name + '\'' +
                 ", address='" + address + '\'' +
+                ", bookCopies=" + bookCopies +
                 '}';
     }
 }

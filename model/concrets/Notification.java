@@ -2,17 +2,20 @@ package model.concrets;
 
 import enums.NotificationTypeEnum;
 
-import java.time.LocalDate;
 import java.util.Objects;
 
 public class Notification {
 
-    private Integer id;
+    private static int nextId = 1;
+
+    private final Integer id;
     private NotificationTypeEnum type;
     private String message;
-    private LocalDate day;
+    private Integer day;
 
-    public Notification(NotificationTypeEnum type, String message, LocalDate day) {
+    public Notification(NotificationTypeEnum type, String message, Integer day) {
+        this.id = nextId++;
+
         this.type = type;
         this.message = message;
         this.day = day;
@@ -20,10 +23,6 @@ public class Notification {
 
     public Integer getId() {
         return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public NotificationTypeEnum getType() {
@@ -42,11 +41,11 @@ public class Notification {
         this.message = message;
     }
 
-    public LocalDate getDay() {
+    public Integer getDay() {
         return day;
     }
 
-    public void setDay(LocalDate day) {
+    public void setDay(Integer day) {
         this.day = day;
     }
 
@@ -65,7 +64,8 @@ public class Notification {
     @Override
     public String toString() {
         return "Notification{" +
-                "type=" + type +
+                "id=" + id +
+                ", type=" + type +
                 ", message='" + message + '\'' +
                 ", day=" + day +
                 '}';

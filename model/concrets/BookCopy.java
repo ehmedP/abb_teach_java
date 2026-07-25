@@ -6,34 +6,24 @@ import java.util.Objects;
 
 public class BookCopy {
 
-    private Integer id;
-    private String copyId;
+    private static int nextId = 1;
+
+    private final Integer id;
+    private Integer branchId;
+
     private Book book;
-    private String branchId;
     private CopyStatusEnum status;
 
-    public BookCopy(Integer id, String copyId, Book book, String branchId, CopyStatusEnum status) {
-        this.id = id;
-        this.copyId = copyId;
+    public BookCopy(Book book, Integer branchId, CopyStatusEnum status) {
+        this.id = nextId++;
+
         this.book = book;
         this.branchId = branchId;
         this.status = status;
     }
 
-    public String getCopyId() {
-        return copyId;
-    }
-
-    public void setCopyId(String copyId) {
-        this.copyId = copyId;
-    }
-
     public Integer getId() {
         return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public Book getBook() {
@@ -44,11 +34,11 @@ public class BookCopy {
         this.book = book;
     }
 
-    public String getBranchId() {
+    public Integer getBranchId() {
         return branchId;
     }
 
-    public void setBranchId(String branchId) {
+    public void setBranchId(Integer branchId) {
         this.branchId = branchId;
     }
 
@@ -79,9 +69,9 @@ public class BookCopy {
     @Override
     public String toString() {
         return "BookCopy{" +
-                "copyId=" + copyId +
-                ", book=" + book +
+                "id=" + id +
                 ", branchId=" + branchId +
+                ", book=" + book +
                 ", status=" + status +
                 '}';
     }

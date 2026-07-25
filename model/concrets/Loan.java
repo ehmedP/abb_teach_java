@@ -1,20 +1,23 @@
 package model.concrets;
 
-import java.time.LocalDate;
 import java.util.Objects;
 
 public class Loan {
 
-    private Integer id;
-    private String loanId;
+    private static int nextId = 1;
+
+    private final Integer id;
+
+    private Integer loanId;
     private BookCopy bookCopy;
     private Member member;
-    private LocalDate borrowDay;
-    private LocalDate dueDay;
+    private Integer borrowDay;
+    private Integer dueDay;
     private Boolean returned;
 
-    public Loan(Integer id, String loanId, BookCopy bookCopy, Member member, LocalDate borrowDay, LocalDate dueDay, Boolean returned) {
-        this.id = id;
+    public Loan(Integer loanId, BookCopy bookCopy, Member member, Integer borrowDay, Integer dueDay, Boolean returned) {
+        this.id = nextId++;
+
         this.loanId = loanId;
         this.bookCopy = bookCopy;
         this.member = member;
@@ -27,15 +30,11 @@ public class Loan {
         return id;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getLoanId() {
+    public Integer getLoanId() {
         return loanId;
     }
 
-    public void setLoanId(String loanId) {
+    public void setLoanId(Integer loanId) {
         this.loanId = loanId;
     }
 
@@ -55,19 +54,19 @@ public class Loan {
         this.member = member;
     }
 
-    public LocalDate getBorrowDay() {
+    public Integer getBorrowDay() {
         return borrowDay;
     }
 
-    public void setBorrowDay(LocalDate borrowDay) {
+    public void setBorrowDay(Integer borrowDay) {
         this.borrowDay = borrowDay;
     }
 
-    public LocalDate getDueDay() {
+    public Integer getDueDay() {
         return dueDay;
     }
 
-    public void setDueDay(LocalDate dueDay) {
+    public void setDueDay(Integer dueDay) {
         this.dueDay = dueDay;
     }
 
@@ -94,7 +93,8 @@ public class Loan {
     @Override
     public String toString() {
         return "Loan{" +
-                "loanId=" + loanId +
+                "id=" + id +
+                ", loanId=" + loanId +
                 ", bookCopy=" + bookCopy +
                 ", member=" + member +
                 ", borrowDay=" + borrowDay +

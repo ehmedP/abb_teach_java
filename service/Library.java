@@ -37,47 +37,37 @@ public class Library {
 
     }
 
-    public void addBook(Book book) {
-        books.add(book);
-        booksByGenre.computeIfAbsent(book.getGenre().getLabel(), k -> new HashSet<>()).add(book);
-    }
+    public boolean borrowBook(Member member, String bookId, String branchId, int currentDay) {
 
-    public void addBranch(Branch branch) {
-        branches.put(branch.getBranchId(), branch);
-    }
+        if (blackList.contains(member)) {
+            System.out.println("Member is in blacklist and cannot borrow books.");
+            return false;
+        }
 
-    public void addLoan(Loan loan) {
-        loanList.add(loan);
-        memberLoans.computeIfAbsent(loan.getMember(), k -> new ArrayList<>()).add(loan);
-    }
+        Branch branch = branches.get(branchId);
 
-    public void addFineRecord(FineRecord record) {
-        fineRecords.add(record);
-    }
+        if (branch == null) {
+            System.out.println("Branch not found.");
+            return false;
+        }
 
-    public void addReservation(String bookId, Reservation reservation) {
-        reservationsByBook.computeIfAbsent(bookId, k -> new PriorityQueue<>()).add(reservation);
-    }
+        BookCopy bookCopy = branch.findAvailableBookCopy(bookId);
 
-    public void addNotification(Member member, Notification notification) {
-        memberNotifications.computeIfAbsent(member, k -> new LinkedList<>()).add(notification);
-    }
+        if (bookCopy == null) {
+            System.out.println("Book not available, added to reservation queue.");
 
-    public void recordMemberActivity(Member member, int count) {
-        memberActivityCounter.merge(member, count, Integer::sum);
-    }
+            this.addReservation(
+                    new Reservation(member, book1, 10)
+            );
 
-    public void recordBookPopularity(Book book, int count) {
-        bookPopularityCounter.merge(book, count, Integer::sum);
-    }
+            return false;
+        }
 
-    public void addTransferRecord(String record) {
-        lastTransfers.push(record);
-    }
+        if (true) {
 
-    public boolean borrowBook(Member m, String bookId, String branchId, int currentDay) {
-        // Implementation for borrowing a book
-        return false;
+        }
+
+        return true;
     }
 
     public boolean returnBook(Member m, String loanId, int currentDay) {
@@ -155,10 +145,9 @@ public class Library {
 
         entries.sort((e1, e2) -> e2.getValue().compareTo(e1.getValue()));
 
-        int topNLength = Math.min(topN, entries.size());
-        List<Member> topMembers = new ArrayList<>(topNLength);
+        List<Member> topMembers = new ArrayList<>();
 
-        for (int i = 0; i < topNLength; i++) {
+        for (int i = 0; i < Math.min(topN, entries.size()); i++) {
             topMembers.add(entries.get(i).getKey());
         }
 
@@ -180,6 +169,60 @@ public class Library {
 
         });
 
+    }
+
+    public Book findBookByBookId(String bookId) {
+        for (Book book : books) {
+            if (book.getId().equals(bookId)) {
+                return book;
+            }
+        }
+        return null;
+    }
+
+    // Helper methods
+
+    public void addBook(Book book) {
+        books.add(book);
+        booksByGenre.computeIfAbsent(book.getGenre().getLabel(), k -> new HashSet<>()).add(book);
+    }
+
+    public void addBranch(Branch branch) {
+        branches.put(branch.getBranchId(), branch);
+    }
+
+    public void addLoan(Loan loan) {
+        loanList.add(loan);
+        memberLoans.computeIfAbsent(loan.getMember(), k -> new ArrayList<>()).add(loan);
+    }
+
+    public void addFineRecord(FineRecord record) {
+        fineRecords.add(record);
+    }
+
+    public void addReservation(String bookId, Reservation reservation) {
+        reservationsByBook.computeIfAbsent(bookId, k ->
+                new PriorityQueue<>(
+                        Comparator.comparing(Reservation::getPriorityScore)
+                                .thenComparing(Reservation::getReservationDay)
+                )
+        ).add(reservation);
+    }
+
+    public void addNotification(Member member, Notification notification) {
+        memberNotifications.computeIfAbsent(member, k -> new LinkedList<>()).add(notification);
+    }
+
+    public void recordMemberActivity(Member member, int count) {
+        memberActivityCounter.merge(member, count, Integer::sum);
+    }
+
+    public void recordBookPopularity(Book book, int count) {
+        bookPopularityCounter.merge(book, count, Integer::sum);
+    }
+
+    public void addTransferRecord(String record) {
+        lastTransfers.push(record);
     }
 
 }

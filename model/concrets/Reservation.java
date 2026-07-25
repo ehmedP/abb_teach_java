@@ -1,29 +1,29 @@
 package model.concrets;
 
-import java.time.LocalDate;
 import java.util.Objects;
 
 public class Reservation {
 
-    private Integer id;
+    private static int nextId = 1;
+
+    private final Integer id;
     private Member member;
     private Book book;
-    private LocalDate reservationDay;
+    private Integer reservationDay;
     private Integer priorityScore;
 
-    public Reservation(Member member, Book book, LocalDate reservationDay, Integer priorityScore) {
+    public Reservation(Member member, Book book, Integer reservationDay) {
+        this.id = nextId++;
+
         this.member = member;
         this.book = book;
         this.reservationDay = reservationDay;
-        this.priorityScore = priorityScore;
+
+        this.priorityScore = calculatePriorityScore(member);
     }
 
     public Integer getId() {
         return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public Member getMember() {
@@ -42,11 +42,11 @@ public class Reservation {
         this.book = book;
     }
 
-    public LocalDate getReservationDay() {
+    public Integer getReservationDay() {
         return reservationDay;
     }
 
-    public void setReservationDay(LocalDate reservationDay) {
+    public void setReservationDay(Integer reservationDay) {
         this.reservationDay = reservationDay;
     }
 
@@ -56,6 +56,14 @@ public class Reservation {
 
     public void setPriorityScore(Integer priorityScore) {
         this.priorityScore = priorityScore;
+    }
+
+    private Integer calculatePriorityScore(Member member) {
+        return switch (member.getType()) {
+            case PREMIUM -> 1;
+            case REGULAR -> 2;
+            case STUDENT -> 3;
+        };
     }
 
     @Override
@@ -73,7 +81,8 @@ public class Reservation {
     @Override
     public String toString() {
         return "Reservation{" +
-                "member=" + member +
+                "id=" + id +
+                ", member=" + member +
                 ", book=" + book +
                 ", reservationDay=" + reservationDay +
                 ", priorityScore=" + priorityScore +

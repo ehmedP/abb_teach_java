@@ -6,14 +6,17 @@ import java.util.Objects;
 
 public class Book {
 
-    private Integer id;
+    private static int nextId = 1;
+
+    private final Integer id;
     private String title;
     private String author;
     private BookGenreEnum genre;
     private Integer isbn;
 
-    public Book(Integer id, String title, String author, BookGenreEnum genre, Integer isbn) {
-        this.id = id;
+    public Book(String title, String author, BookGenreEnum genre, Integer isbn) {
+        this.id = nextId++;
+
         this.title = title;
         this.author = author;
         this.genre = genre;
@@ -26,10 +29,6 @@ public class Book {
 
     public Integer getId() {
         return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public String getTitle() {
@@ -82,7 +81,7 @@ public class Book {
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", author='" + author + '\'' +
-                ", genre='" + genre + '\'' +
+                ", genre=" + genre +
                 ", isbn=" + isbn +
                 '}';
     }

@@ -1,17 +1,20 @@
 package model.concrets;
 
-import java.time.LocalDate;
 import java.util.Objects;
 
 public class FineRecord {
 
-    private Integer id;
+    private static int nextId = 1;
+
+    private final Integer id;
     private Member member;
     private Double amount;
     private String reason;
-    private LocalDate day;
+    private Integer day;
 
-    public FineRecord(Member member, Double amount, String reason, LocalDate day) {
+    public FineRecord(Member member, Double amount, String reason, Integer day) {
+        this.id = nextId++;
+
         this.member = member;
         this.amount = amount;
         this.reason = reason;
@@ -20,10 +23,6 @@ public class FineRecord {
 
     public Integer getId() {
         return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public Member getMember() {
@@ -50,11 +49,11 @@ public class FineRecord {
         this.reason = reason;
     }
 
-    public LocalDate getDay() {
+    public Integer getDay() {
         return day;
     }
 
-    public void setDay(LocalDate day) {
+    public void setDay(Integer day) {
         this.day = day;
     }
 
@@ -73,7 +72,8 @@ public class FineRecord {
     @Override
     public String toString() {
         return "FineRecord{" +
-                "member=" + member +
+                "id=" + id +
+                ", member=" + member +
                 ", amount=" + amount +
                 ", reason='" + reason + '\'' +
                 ", day=" + day +
