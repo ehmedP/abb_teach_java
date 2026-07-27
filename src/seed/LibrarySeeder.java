@@ -35,6 +35,12 @@ public class LibrarySeeder {
         Member diana = new Member("Diana", "diana@email.com", MembershipTypeEnum.REGULAR);
         Member eve = new Member("Eve", "eve@email.com", MembershipTypeEnum.STUDENT);
 
+        library.addMember(alice);
+        library.addMember(bob);
+        library.addMember(charlie);
+        library.addMember(diana);
+        library.addMember(eve);
+
         // ========== BRANCHES (created with empty maps first to get stable IDs) ==========
         Branch central = new Branch("Central Library", "123 Main St, Downtown", new HashMap<>());
         Branch north = new Branch("North Branch", "456 Oak Ave, Uptown", new HashMap<>());

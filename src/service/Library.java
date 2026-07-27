@@ -36,8 +36,50 @@ public class Library {
 
     private final Map<Member, Integer> memberActivityCounter = new HashMap<>();
 
+    private final Map<Integer, Member> members = new HashMap<>();
+
     public Library() {
 
+    }
+
+    public void addMember(Member member) {
+        members.put(member.getId(), member);
+    }
+
+    public Member getMemberById(Integer id) {
+        return members.get(id);
+    }
+
+    public Collection<Member> getAllMembers() {
+        return members.values();
+    }
+
+    public List<Book> getAllBooks() {
+        return new ArrayList<>(books);
+    }
+
+    public List<Branch> getAllBranches() {
+        return new ArrayList<>(branches.values());
+    }
+
+    public List<Loan> getAllLoans() {
+        return new ArrayList<>(loanList);
+    }
+
+    public List<String> getTransferHistoryList() {
+        return new ArrayList<>(transferHistory);
+    }
+
+    public boolean isBlacklisted(Member member) {
+        return blackList.contains(member);
+    }
+
+    public Set<Member> getBlacklistedMembers() {
+        return new HashSet<>(blackList);
+    }
+
+    public Map<Integer, PriorityQueue<Reservation>> getReservationsByBook() {
+        return reservationsByBook;
     }
 
     public boolean borrowBook(Member member, Integer bookId, Integer branchId, Integer currentDay) {
