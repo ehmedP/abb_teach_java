@@ -181,4 +181,4 @@ Main.java
 
 Example execution of the program:
 
-![Terminal Output](images/img.png)
+![Terminal Output](images/img1.png)
