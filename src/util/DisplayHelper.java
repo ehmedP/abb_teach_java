@@ -1,8 +1,8 @@
-package util;
+package src.util;
 
-import model.concrets.Branch;
-import model.concrets.Member;
-import model.concrets.Notification;
+import src.model.concrets.Branch;
+import src.model.concrets.Member;
+import src.model.concrets.Notification;
 
 public final class DisplayHelper {
 

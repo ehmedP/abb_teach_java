@@ -1,6 +1,6 @@
-package model.concrets;
+package src.model.concrets;
 
-import enums.NotificationTypeEnum;
+import src.enums.NotificationTypeEnum;
 
 import java.util.Objects;
 

@@ -1,6 +1,6 @@
-package model.concrets;
+package src.model.concrets;
 
-import enums.BookGenreEnum;
+import src.enums.BookGenreEnum;
 
 import java.util.Objects;
 

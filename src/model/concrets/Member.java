@@ -1,9 +1,9 @@
-package model.concrets;
+package src.model.concrets;
 
-import enums.MembershipTypeEnum;
-import interfaces.Finable;
-import interfaces.Notifiable;
-import model.abstracts.LibraryUser;
+import src.enums.MembershipTypeEnum;
+import src.interfaces.Finable;
+import src.interfaces.Notifiable;
+import src.model.abstracts.LibraryUser;
 
 public class Member extends LibraryUser implements Finable, Notifiable {
 

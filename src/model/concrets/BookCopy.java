@@ -1,6 +1,6 @@
-package model.concrets;
+package src.model.concrets;
 
-import enums.CopyStatusEnum;
+import src.enums.CopyStatusEnum;
 
 import java.util.Objects;
 

@@ -1,4 +1,4 @@
-package model.abstracts;
+package src.model.abstracts;
 
 import java.util.Objects;
 

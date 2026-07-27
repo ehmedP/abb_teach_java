@@ -1,4 +1,4 @@
-import service.LmsManager;
+import src.service.LmsManager;
 
 void main() {
 

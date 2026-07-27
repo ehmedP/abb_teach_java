@@ -1,4 +1,4 @@
-package enums;
+package src.enums;
 
 public enum NotificationTypeEnum {
     DUE_SOON("due_soon", "Due Soon"),

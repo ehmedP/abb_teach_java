@@ -1,6 +1,6 @@
-package interfaces;
+package src.interfaces;
 
-import model.concrets.Notification;
+import src.model.concrets.Notification;
 
 public interface Notifiable {
 
