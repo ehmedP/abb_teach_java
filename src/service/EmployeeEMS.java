@@ -39,9 +39,9 @@ public class EmployeeEMS {
     public Map<String, List<Employee>> getEmployeesGroupByDepartment(Company<Employee> company) {
         Map<String, List<Employee>> employeesGroupByDepartment = new HashMap<>();
 
-        for (Employee employee : company.getEmployees()) {
-            String departmentId = employee.getDepartmentId();
-            employeesGroupByDepartment.computeIfAbsent(departmentId, k -> new ArrayList<>()).add(employee);
+        for (Manager manager : company.getManagers()) {
+            String departmentId = manager.getDepartment();
+            employeesGroupByDepartment.computeIfAbsent(departmentId, k -> new ArrayList<>()).add(manager);
         }
 
         return employeesGroupByDepartment;

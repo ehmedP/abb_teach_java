@@ -1,7 +1,9 @@
 package src.service;
 
 import src.model.abstracts.Employee;
+import src.model.concret.Manager;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -40,6 +42,18 @@ public class Company<T extends Employee> {
 
     public List<T> getEmployees() {
         return employees;
+    }
+
+    public List<Manager> getManagers() {
+        List<Manager> managers = new ArrayList<>();
+
+        for (Employee employee : getEmployees()) {
+            if (employee instanceof Manager) {
+                managers.add((Manager) employee);
+            }
+        }
+
+        return managers;
     }
 
     public void setEmployees(List<T> employees) {
