@@ -176,3 +176,9 @@ FineRecord.java (→ src.model/concrets/FineRecord.java)
 Library.java (→ src.service/Library.java)
 Main.java
 ```
+
+## Terminal Output
+
+Example execution of the program:
+
+![Terminal Output](images/img.png)
