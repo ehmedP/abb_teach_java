@@ -13,9 +13,11 @@ public class Branch {
     private final Integer id;
     private String name;
     private String address;
-    private Map<String, List<BookCopy>> bookCopies;
 
-    public Branch(String name, String address, Map<String, List<BookCopy>> bookCopies) {
+    // bookId -> List of BookCopy
+    private Map<Integer, List<BookCopy>> bookCopies;
+
+    public Branch(String name, String address, Map<Integer, List<BookCopy>> bookCopies) {
         this.id = nextId++;
 
         this.name = name;
@@ -23,11 +25,16 @@ public class Branch {
         this.bookCopies = bookCopies;
     }
 
-    public Map<String, List<BookCopy>> getBookCopies() {
+    // bookId -> List<BookCopy>
+    public Map<Integer, List<BookCopy>> getBookCopies() {
         return bookCopies;
     }
 
-    public BookCopy findAvailableBookCopy(String bookId) {
+    public void setBookCopies(Map<Integer, List<BookCopy>> bookCopies) {
+        this.bookCopies = bookCopies;
+    }
+
+    public BookCopy findAvailableBookCopy(Integer bookId) {
         List<BookCopy> copies = getBookCopies().get(bookId);
 
         if (copies == null || copies.isEmpty()) {
@@ -45,10 +52,6 @@ public class Branch {
 
     public Integer getId() {
         return id;
-    }
-
-    public void setBookCopies(Map<String, List<BookCopy>> bookCopies) {
-        this.bookCopies = bookCopies;
     }
 
     public String getName() {

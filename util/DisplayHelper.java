@@ -39,4 +39,32 @@ public final class DisplayHelper {
             ---------------------------------------------------------------
             """, branch.getName(), totalBookCount, uniqueGenreCount, activeLoanCount, lateLoanCount);
     }
+
+    public static void printBranchNotFound() {
+        System.out.println("Branch not found.");
+    }
+
+    public static void printSearchKeywordEmpty() {
+        System.out.println("Keyword cannot be empty.");
+    }
+
+    public static void printBlacklistWarn() {
+        System.out.println("Member is in blacklist and cannot borrow books.");
+    }
+
+    public static void printBookNotAvailable() {
+        System.out.println("Book not available, added to reservation queue.");
+    }
+
+    public static void printBookNotFound() {
+        System.out.println("Book not found.");
+    }
+
+    public static void printLoanNotFound() {
+        System.out.println("Loan not found.");
+    }
+
+    public static void printBookNotFoundInBranch() {
+        System.out.println("Transfer failed: book not found in source branch.");
+    }
 }

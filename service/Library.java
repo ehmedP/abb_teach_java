@@ -1,15 +1,16 @@
 package service;
 
 import enums.BookGenreEnum;
+import enums.NotificationTypeEnum;
 import model.concrets.*;
 import util.DisplayHelper;
 
-import java.time.LocalDate;
 import java.util.*;
 
 public class Library {
 
-    private final Map<String, Branch> branches = new HashMap<>();
+    // branchId -> Branch
+    private final Map<Integer, Branch> branches = new HashMap<>();
 
     private final Set<Book> books = new HashSet<>();
 
@@ -17,8 +18,10 @@ public class Library {
 
     private final List<Loan> loanList = new ArrayList<>();
 
-    private final Map<String, PriorityQueue<Reservation>> reservationsByBook = new HashMap<>();
+    // bookId -> List of Reservations
+    private final Map<Integer, PriorityQueue<Reservation>> reservationsByBook = new HashMap<>();
 
+    // book -> book popularity count
     private final Map<Book, Integer> bookPopularityCounter = new HashMap<>();
 
     private final List<FineRecord> fineRecords = new ArrayList<>();
@@ -27,7 +30,7 @@ public class Library {
 
     private final Set<Member> blackList = new HashSet<>();
 
-    private final Deque<String> lastTransfers = new ArrayDeque<>();
+    private final Deque<String> transferHistory = new ArrayDeque<>();
 
     private final Map<String, Set<Book>> booksByGenre = new TreeMap<>();
 
@@ -37,53 +40,106 @@ public class Library {
 
     }
 
-    public boolean borrowBook(Member member, String bookId, String branchId, int currentDay) {
+    public boolean borrowBook(Member member, Integer bookId, Integer branchId, Integer currentDay) {
+
+        Book book = findBookByBookId(bookId);
+
+        if (book == null) {
+            DisplayHelper.printBookNotFound();
+            return false;
+        }
 
         if (blackList.contains(member)) {
-            System.out.println("Member is in blacklist and cannot borrow books.");
+            DisplayHelper.printBlacklistWarn();
             return false;
         }
 
         Branch branch = branches.get(branchId);
 
         if (branch == null) {
-            System.out.println("Branch not found.");
+            DisplayHelper.printBranchNotFound();
             return false;
         }
 
         BookCopy bookCopy = branch.findAvailableBookCopy(bookId);
 
         if (bookCopy == null) {
-            System.out.println("Book not available, added to reservation queue.");
+            DisplayHelper.printBookNotAvailable();
 
-            this.addReservation(
-                    new Reservation(member, book1, 10)
-            );
+            this.addReservation(new Reservation(member, book, currentDay));
 
             return false;
         }
 
-        if (true) {
+        bookCopy.markAsBorrowed();
 
-        }
+        addLoan(
+                new Loan(bookCopy, member, currentDay)
+        );
+
+        bookPopularityCounter.put(book, bookPopularityCounter.get(book) + 1);
 
         return true;
     }
 
-    public boolean returnBook(Member m, String loanId, int currentDay) {
-        // Implementation for return a book
-        return false;
+    public void returnBook(Member member, Integer loanId, int currentDay) {
+
+        Loan loan = this.loanList.get(loanId);
+
+        if (loan == null) {
+            DisplayHelper.printLoanNotFound();
+            return;
+        }
+
+        loan.markAsReturned();
+
+        if (currentDay > loan.getDueDay()) {
+            Integer daysLate = currentDay - loan.getDueDay();
+
+            this.addFineRecord(new FineRecord(member, daysLate * member.calculateFine(daysLate), daysLate));
+
+            if (getLateCountByMember(member) > 3) {
+                addBlackListMember(member);
+                notifyBlackListMember(member, currentDay);
+            }
+        }
+
+        Reservation reservation = pollReservationByBook(loan.getBookCopy().getBook());
+
+        if (reservation != null) {
+
+            addLoan(new Loan(loan.getBookCopy(), member, currentDay));
+            notifyReservationReady(member, currentDay);
+        } else {
+            loan.getBookCopy().markAsAvailable();
+        }
+
     }
 
-    public boolean transferBook(String bookId, String fromBranchId, String toBranchId) {
-        // Implementation for transfer a book
-        return false;
+    public boolean transferBook(Integer bookId, Integer fromBranchId, Integer toBranchId) {
+
+        BookCopy bookCopy = branches.get(fromBranchId).getBookCopies().get(bookId).getFirst();
+
+        if (bookCopy == null) {
+            DisplayHelper.printBookNotFoundInBranch();
+            return false;
+        }
+
+        bookCopy.markAsInTransit();
+
+        // transfer process
+
+        bookCopy.markAsAvailable();
+
+        addTransferRecord("Book " + bookCopy.getBook().getTitle() + ": " + fromBranchId + " to branch " + toBranchId);
+
+        return true;
     }
 
     public List<Book> searchBooks(String keyword) {
 
         if (keyword.isBlank()) {
-            System.out.println("Keyword cannot be empty.");
+            DisplayHelper.printSearchKeywordEmpty();
             return new ArrayList<>();
         }
 
@@ -102,19 +158,17 @@ public class Library {
         return result;
     }
 
-    public void generateBranchReport(String branchId) {
+    public void generateBranchReport(Integer branchId) {
 
         Branch branch = branches.get(branchId);
 
         if (branch == null) {
-            System.out.println("Branch not found.");
+            DisplayHelper.printBranchNotFound();
             return;
         }
 
-        // TODO: this process isn't done
         int totalBookCount = 0,
-                activeLoanCount = 0,
-                lateLoanCount = 0;
+                activeLoanCount = 0;
 
         Set<BookGenreEnum> uniqueGenres = new HashSet<>();
 
@@ -126,12 +180,19 @@ public class Library {
             }
         }
 
+        for (Loan loan : loanList) {
+
+            if (loan.isNotReturned()) {
+                activeLoanCount++;
+            }
+        }
+
         DisplayHelper.printBranchReport(
                 branch,
                 totalBookCount,
                 uniqueGenres.size(),
                 activeLoanCount,
-                lateLoanCount
+                fineRecords.size()
         );
     }
 
@@ -154,7 +215,7 @@ public class Library {
         return topMembers;
     }
 
-    public void processNotifications(LocalDate date) {
+    public void processNotifications(Integer currentDay) {
 
         memberNotifications.forEach((member, notifications) -> {
 
@@ -171,24 +232,47 @@ public class Library {
 
     }
 
-    public Book findBookByBookId(String bookId) {
+    // Helper methods
+
+    public Book findBookByBookId(Integer bookId) {
         for (Book book : books) {
             if (book.getId().equals(bookId)) {
                 return book;
             }
         }
+
         return null;
     }
 
-    // Helper methods
+    private int getLateCountByMember(Member member) {
+        int count = 0;
+
+        for (FineRecord fineRecord : fineRecords) {
+            if (fineRecord.getMember().equals(member)) {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    private Reservation pollReservationByBook(Book book) {
+        return reservationsByBook.get(book.getId()).poll();
+    }
+
+    // Add methods
 
     public void addBook(Book book) {
         books.add(book);
         booksByGenre.computeIfAbsent(book.getGenre().getLabel(), k -> new HashSet<>()).add(book);
     }
 
+    public void addBlackListMember(Member member) {
+        blackList.add(member);
+    }
+
     public void addBranch(Branch branch) {
-        branches.put(branch.getBranchId(), branch);
+        branches.put(branch.getId(), branch);
     }
 
     public void addLoan(Loan loan) {
@@ -200,8 +284,8 @@ public class Library {
         fineRecords.add(record);
     }
 
-    public void addReservation(String bookId, Reservation reservation) {
-        reservationsByBook.computeIfAbsent(bookId, k ->
+    public void addReservation(Reservation reservation) {
+        reservationsByBook.computeIfAbsent(reservation.getBook().getId(), k ->
                 new PriorityQueue<>(
                         Comparator.comparing(Reservation::getPriorityScore)
                                 .thenComparing(Reservation::getReservationDay)
@@ -222,7 +306,36 @@ public class Library {
     }
 
     public void addTransferRecord(String record) {
-        lastTransfers.push(record);
+
+        if (transferHistory.size() >= 5) {
+            transferHistory.removeLast();
+        }
+
+        transferHistory.push(record);
+    }
+
+    // Notification methods
+
+    public void notifyReservationReady(Member member, Integer currentDay) {
+        addNotification(
+                member,
+                new Notification(
+                        NotificationTypeEnum.RESERVATION_READY,
+                        "A reserved book is now available for pickup.",
+                        currentDay
+                )
+        );
+    }
+
+    public void notifyBlackListMember(Member member, Integer currentDay) {
+        addNotification(
+                member,
+                new Notification(
+                        NotificationTypeEnum.BLACKLIST_WARNING,
+                        "You have been added to the blacklist due to excessive late returns.",
+                        currentDay
+                )
+        );
     }
 
 }

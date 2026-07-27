@@ -2,6 +2,6 @@ package interfaces;
 
 public interface Finable {
 
-    double calculateFine(int daysLate);
+    Double calculateFine(Integer daysLate);
 
 }

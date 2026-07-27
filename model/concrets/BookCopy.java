@@ -54,6 +54,18 @@ public class BookCopy {
         this.status = status;
     }
 
+    public void markAsBorrowed() {
+        setStatus(CopyStatusEnum.BORROWED);
+    }
+
+    public void markAsInTransit() {
+        setStatus(CopyStatusEnum.IN_TRANSIT);
+    }
+
+    public void markAsAvailable() {
+        setStatus(CopyStatusEnum.AVAILABLE);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;

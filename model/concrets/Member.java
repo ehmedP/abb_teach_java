@@ -24,14 +24,28 @@ public class Member extends LibraryUser implements Finable, Notifiable {
         this.type = type;
     }
 
-    @Override
-    public double getDiscountRate() {
-        return 0;
+    public Integer calculateDueDay(Integer borrowDay) {
+        Integer calculatedDay = 14;
+
+        if (getType() == MembershipTypeEnum.PREMIUM) {
+            calculatedDay = 21;
+        }
+
+        return borrowDay + calculatedDay;
     }
 
     @Override
-    public double calculateFine(int daysLate) {
-        return 0;
+    public Double getDiscountRate() {
+        return 0.0;
+    }
+
+    @Override
+    public Double calculateFine(Integer daysLate) {
+        return switch (getType()) {
+            case PREMIUM -> 0.2;
+            case STUDENT -> 0.3;
+            case REGULAR -> 0.5;
+        };
     }
 
     @Override

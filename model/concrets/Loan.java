@@ -8,34 +8,29 @@ public class Loan {
 
     private final Integer id;
 
-    private Integer loanId;
     private BookCopy bookCopy;
     private Member member;
     private Integer borrowDay;
     private Integer dueDay;
     private Boolean returned;
 
-    public Loan(Integer loanId, BookCopy bookCopy, Member member, Integer borrowDay, Integer dueDay, Boolean returned) {
+    public Loan(BookCopy bookCopy, Member member, Integer borrowDay) {
+        this(bookCopy, member, borrowDay, member.calculateDueDay(borrowDay));
+    }
+
+    public Loan(BookCopy bookCopy, Member member, Integer borrowDay, Integer dueDay) {
         this.id = nextId++;
 
-        this.loanId = loanId;
         this.bookCopy = bookCopy;
         this.member = member;
         this.borrowDay = borrowDay;
         this.dueDay = dueDay;
-        this.returned = returned;
+
+        this.returned = false;
     }
 
     public Integer getId() {
         return id;
-    }
-
-    public Integer getLoanId() {
-        return loanId;
-    }
-
-    public void setLoanId(Integer loanId) {
-        this.loanId = loanId;
     }
 
     public BookCopy getBookCopy() {
@@ -74,8 +69,16 @@ public class Loan {
         return returned;
     }
 
+    public boolean isNotReturned() {
+        return !getReturned();
+    }
+
     public void setReturned(Boolean returned) {
         this.returned = returned;
+    }
+
+    public void markAsReturned() {
+        setReturned(true);
     }
 
     @Override
@@ -94,7 +97,6 @@ public class Loan {
     public String toString() {
         return "Loan{" +
                 "id=" + id +
-                ", loanId=" + loanId +
                 ", bookCopy=" + bookCopy +
                 ", member=" + member +
                 ", borrowDay=" + borrowDay +

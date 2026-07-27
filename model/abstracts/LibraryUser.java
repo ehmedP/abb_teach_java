@@ -38,7 +38,7 @@ public abstract class LibraryUser {
         this.email = email;
     }
 
-    public abstract double getDiscountRate();
+    public abstract Double getDiscountRate();
 
     @Override
     public boolean equals(Object o) {

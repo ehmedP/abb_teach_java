@@ -12,6 +12,10 @@ public class FineRecord {
     private String reason;
     private Integer day;
 
+    public FineRecord(Member member, Double amount, Integer day) {
+        this(member, amount, "Untitled Reason", day);
+    }
+
     public FineRecord(Member member, Double amount, String reason, Integer day) {
         this.id = nextId++;
 
