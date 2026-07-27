@@ -17,11 +17,8 @@ public class EmployeeEMS {
         CompanySeeder.seed(company);
 
         // departmentId -> list
-        Map<String, List<Employee>> employeesGroupByDepartment = new HashMap<>();
-        Map<String, List<Employee>> employeesGroupByDepartmentTree = new TreeMap<>();
-
-        employeesGroupByDepartment = getEmployeesGroupByDepartment(company);
-        employeesGroupByDepartmentTree = getEmployeesGroupByDepartment(company);
+        Map<String, List<Employee>> employeesGroupByDepartment = new HashMap<>(getEmployeesGroupByDepartment(company));
+        Map<String, List<Employee>> employeesGroupByDepartmentTree = new TreeMap<>(getEmployeesGroupByDepartment(company));
 
         Set<String> skills = new TreeSet<>();
         SkillSeeder.seed(skills);
@@ -32,8 +29,7 @@ public class EmployeeEMS {
         Collections.sort(company.getEmployees(), comparatorByOfferDate);
         Collections.sort(company.getEmployees(), comparatorByName);
 
-        GeneralHelper.printEmployees(company.getEmployees());
-
+        GeneralHelper.printEmployees(company.getManagers());
     }
 
     public Map<String, List<Employee>> getEmployeesGroupByDepartment(Company<Employee> company) {
