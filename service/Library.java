@@ -118,7 +118,15 @@ public class Library {
 
     public boolean transferBook(Integer bookId, Integer fromBranchId, Integer toBranchId) {
 
-        BookCopy bookCopy = branches.get(fromBranchId).getBookCopies().get(bookId).getFirst();
+        Branch fromBranch = branches.get(fromBranchId);
+        Branch toBranch = branches.get(toBranchId);
+
+        if (fromBranch == null || toBranch == null) {
+            DisplayHelper.printBranchNotFound();
+            return false;
+        }
+
+        BookCopy bookCopy = fromBranch.getBookCopies().get(bookId).getFirst();
 
         if (bookCopy == null) {
             DisplayHelper.printBookNotFoundInBranch();
@@ -127,7 +135,10 @@ public class Library {
 
         bookCopy.markAsInTransit();
 
-        // transfer process
+        bookCopy.setBranchId(toBranchId);
+
+        fromBranch.getBookCopies().get(bookId).remove(bookCopy);
+        toBranch.getBookCopies().get(bookId).add(bookCopy);
 
         bookCopy.markAsAvailable();
 
