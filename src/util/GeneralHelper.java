@@ -12,4 +12,9 @@ public class GeneralHelper {
         }
     }
 
+    public static void printSection(String title) {
+        System.out.println("\n" + "========================================");
+        System.out.println(title);
+        System.out.println("========================================");
+    }
 }

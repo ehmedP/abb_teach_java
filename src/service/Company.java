@@ -2,6 +2,7 @@ package src.service;
 
 import src.model.abstracts.Employee;
 import src.model.concret.Developer;
+import src.model.concret.Intern;
 import src.model.concret.Manager;
 
 import java.util.*;
@@ -64,12 +65,26 @@ public class Company<T extends Employee> {
     }
 
     public List<Manager> getManagers() {
-        List<Manager> managers = new ArrayList<>();
-        for (Employee employee : getEmployees()) {
-            if (employee instanceof Manager mgr) {
-                managers.add(mgr);
+        return getEmployeesByType(Manager.class);
+    }
+
+    public List<Developer> getDevelopers() {
+        return getEmployeesByType(Developer.class);
+    }
+
+    public List<Intern> getInterns() {
+        return getEmployeesByType(Intern.class);
+    }
+
+    private <E> List<E> getEmployeesByType(Class<E> type) {
+        List<E> result = new ArrayList<>();
+
+        for (T employee : employees) {
+            if (type.isInstance(employee)) {
+                result.add((E) employee);
             }
         }
-        return managers;
+
+        return result;
     }
 }
