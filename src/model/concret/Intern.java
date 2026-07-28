@@ -9,9 +9,8 @@ public class Intern extends Employee {
     private String university;
     private Integer internshipDuration;
 
-
-    public Intern(String name, LocalDate offer_date, Double salary, String university, Integer internshipDuration) {
-        super(name, offer_date, salary);
+    public Intern(String name, LocalDate startDate, Double salary, String university, Integer internshipDuration) {
+        super(name, startDate, salary);
 
         this.university = university;
         this.internshipDuration = internshipDuration;
@@ -31,5 +30,13 @@ public class Intern extends Employee {
 
     public void setInternshipDuration(Integer internshipDuration) {
         this.internshipDuration = internshipDuration;
+    }
+
+    @Override
+    public String toString() {
+        return "Intern{" + super.toString() +
+                ", university='" + university + '\'' +
+                ", internshipDuration=" + internshipDuration +
+                '}';
     }
 }

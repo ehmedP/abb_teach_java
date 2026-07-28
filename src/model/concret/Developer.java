@@ -9,8 +9,8 @@ public class Developer extends Employee {
     private String programmingLanguage;
     private Integer projectCount;
 
-    public Developer(String programmingLanguage, Integer projectCount, String name, LocalDate offer_date, Double salary) {
-        super(name, offer_date, salary);
+    public Developer(String programmingLanguage, Integer projectCount, String name, LocalDate startDate, Double salary) {
+        super(name, startDate, salary);
 
         this.programmingLanguage = programmingLanguage;
         this.projectCount = projectCount;
@@ -30,5 +30,13 @@ public class Developer extends Employee {
 
     public void setProjectCount(Integer projectCount) {
         this.projectCount = projectCount;
+    }
+
+    @Override
+    public String toString() {
+        return "Developer{" + super.toString() +
+                ", programmingLanguage='" + programmingLanguage + '\'' +
+                ", projectCount=" + projectCount +
+                '}';
     }
 }

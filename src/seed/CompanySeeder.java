@@ -7,17 +7,12 @@ import src.model.concret.Manager;
 import src.service.Company;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 public class CompanySeeder {
 
     public static void seed(Company<Employee> company) {
 
-        List<Employee> employees = new ArrayList<>();
-
-        // Developers
-        employees.add(new Developer(
+        company.add(new Developer(
                 "Java",
                 8,
                 "Ahmad Aliyev",
@@ -25,7 +20,7 @@ public class CompanySeeder {
                 3500.0
         ));
 
-        employees.add(new Developer(
+        company.add(new Developer(
                 "PHP",
                 12,
                 "Murad Hasanov",
@@ -33,7 +28,7 @@ public class CompanySeeder {
                 4200.0
         ));
 
-        employees.add(new Developer(
+        company.add(new Developer(
                 "Python",
                 5,
                 "Kamran Mammadov",
@@ -41,7 +36,7 @@ public class CompanySeeder {
                 2800.0
         ));
 
-        employees.add(new Developer(
+        company.add(new Developer(
                 "C#",
                 9,
                 "Rashad Karimov",
@@ -49,7 +44,7 @@ public class CompanySeeder {
                 4700.0
         ));
 
-        employees.add(new Developer(
+        company.add(new Developer(
                 "JavaScript",
                 4,
                 "Nijat Ibrahimov",
@@ -57,8 +52,7 @@ public class CompanySeeder {
                 3000.0
         ));
 
-        // Managers
-        employees.add(new Manager(
+        company.add(new Manager(
                 15,
                 "IT",
                 "Aysel Guliyeva",
@@ -66,7 +60,7 @@ public class CompanySeeder {
                 6500.0
         ));
 
-        employees.add(new Manager(
+        company.add(new Manager(
                 10,
                 "HR",
                 "Leyla Ahmadova",
@@ -74,7 +68,7 @@ public class CompanySeeder {
                 5200.0
         ));
 
-        employees.add(new Manager(
+        company.add(new Manager(
                 20,
                 "Finance",
                 "Elvin Safarov",
@@ -82,8 +76,7 @@ public class CompanySeeder {
                 7200.0
         ));
 
-        // Interns
-        employees.add(new Intern(
+        company.add(new Intern(
                 "Farid Aliyev",
                 LocalDate.of(2024, 6, 1),
                 800.0,
@@ -91,7 +84,7 @@ public class CompanySeeder {
                 6
         ));
 
-        employees.add(new Intern(
+        company.add(new Intern(
                 "Nigar Ismayilova",
                 LocalDate.of(2024, 7, 10),
                 900.0,
@@ -99,7 +92,7 @@ public class CompanySeeder {
                 3
         ));
 
-        employees.add(new Intern(
+        company.add(new Intern(
                 "Orxan Huseynov",
                 LocalDate.of(2024, 5, 15),
                 850.0,
@@ -107,15 +100,13 @@ public class CompanySeeder {
                 4
         ));
 
-        employees.add(new Intern(
+        company.add(new Intern(
                 "Sabina Rahimova",
                 LocalDate.of(2024, 8, 5),
                 950.0,
                 "Khazar University",
                 6
         ));
-
-        company.setEmployees(employees);
     }
 
 }

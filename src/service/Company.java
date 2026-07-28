@@ -1,62 +1,75 @@
 package src.service;
 
 import src.model.abstracts.Employee;
+import src.model.concret.Developer;
 import src.model.concret.Manager;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class Company<T extends Employee> {
 
-    private List<T> employees;
+    private final List<T> employees;
 
     public Company() {
-        //
+        this.employees = new ArrayList<>();
     }
 
     public Company(List<T> employees) {
-        this.employees = employees;
+        this.employees = new ArrayList<>(employees);
     }
 
     public void add(T employee) {
-
-        getEmployees().add(employee);
-
+        employees.add(employee);
     }
 
-    public Employee findById(Integer id) {
-
-        for (Employee employee : getEmployees()) {
+    public Optional<T> findById(Integer id) {
+        for (T employee : employees) {
             if (employee.getId().equals(id)) {
-                return employee;
+                return Optional.of(employee);
             }
         }
-
-        return null;
+        return Optional.empty();
     }
 
     public List<T> getAll() {
-        return Collections.unmodifiableList(getEmployees());
+        return Collections.unmodifiableList(employees);
     }
 
     public List<T> getEmployees() {
         return employees;
     }
 
-    public List<Manager> getManagers() {
-        List<Manager> managers = new ArrayList<>();
+    public Map<String, List<T>> groupByDepartment() {
+        Map<String, List<T>> map = new HashMap<>();
 
-        for (Employee employee : getEmployees()) {
-            if (employee instanceof Manager) {
-                managers.add((Manager) employee);
+        for (T employee : employees) {
+            if (employee instanceof Manager mgr) {
+                map.computeIfAbsent(mgr.getDepartment(), k -> new ArrayList<>()).add(employee);
             }
         }
 
-        return managers;
+        return map;
     }
 
-    public void setEmployees(List<T> employees) {
-        this.employees = employees;
+    public Set<String> getAllSkills() {
+        Set<String> skills = new HashSet<>();
+
+        for (T employee : employees) {
+            if (employee instanceof Developer dev) {
+                skills.add(dev.getProgrammingLanguage());
+            }
+        }
+
+        return skills;
+    }
+
+    public List<Manager> getManagers() {
+        List<Manager> managers = new ArrayList<>();
+        for (Employee employee : getEmployees()) {
+            if (employee instanceof Manager mgr) {
+                managers.add(mgr);
+            }
+        }
+        return managers;
     }
 }

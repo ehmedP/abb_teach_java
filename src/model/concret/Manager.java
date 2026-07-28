@@ -6,22 +6,22 @@ import java.time.LocalDate;
 
 public class Manager extends Employee {
 
-    private Integer ownTeamSize;
+    private Integer teamSize;
     private String department;
 
-    public Manager(Integer ownTeamSize, String department, String name, LocalDate offer_date, Double salary) {
-        super(name, offer_date, salary);
+    public Manager(Integer teamSize, String department, String name, LocalDate startDate, Double salary) {
+        super(name, startDate, salary);
 
-        this.ownTeamSize = ownTeamSize;
+        this.teamSize = teamSize;
         this.department = department;
     }
 
-    public Integer getOwnTeamSize() {
-        return ownTeamSize;
+    public Integer getTeamSize() {
+        return teamSize;
     }
 
-    public void setOwnTeamSize(Integer ownTeamSize) {
-        this.ownTeamSize = ownTeamSize;
+    public void setTeamSize(Integer teamSize) {
+        this.teamSize = teamSize;
     }
 
     public String getDepartment() {
@@ -34,9 +34,9 @@ public class Manager extends Employee {
 
     @Override
     public String toString() {
-        return "Manager{" +
-                "ownTeamSize=" + ownTeamSize +
+        return "Manager{" + super.toString() +
                 ", department='" + department + '\'' +
+                ", teamSize=" + teamSize +
                 '}';
     }
 }

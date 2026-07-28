@@ -8,14 +8,14 @@ public abstract class Employee implements Comparable<Employee> {
 
     private final Integer id;
     private String name;
-    private LocalDate offer_date;
+    private LocalDate startDate;
     private Double salary;
 
-    public Employee(String name, LocalDate offer_date, Double salary) {
+    public Employee(String name, LocalDate startDate, Double salary) {
         this.id = nextId++;
 
         this.name = name;
-        this.offer_date = offer_date;
+        this.startDate = startDate;
         this.salary = salary;
     }
 
@@ -31,12 +31,12 @@ public abstract class Employee implements Comparable<Employee> {
         this.name = name;
     }
 
-    public LocalDate getOffer_date() {
-        return offer_date;
+    public LocalDate getStartDate() {
+        return startDate;
     }
 
-    public void setOffer_date(LocalDate offer_date) {
-        this.offer_date = offer_date;
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
     }
 
     public Double getSalary() {
@@ -49,6 +49,13 @@ public abstract class Employee implements Comparable<Employee> {
 
     @Override
     public int compareTo(Employee other) {
-        return this.getSalary().compareTo(other.getSalary());
+        return this.salary.compareTo(other.salary);
+    }
+
+    @Override
+    public String toString() {
+        return "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", salary=" + salary;
     }
 }
