@@ -1,8 +1,6 @@
 package src.service;
 
 import src.model.abstracts.Employee;
-import src.model.concret.Developer;
-import src.model.concret.Intern;
 import src.model.concret.Manager;
 import src.seed.CompanySeeder;
 import src.seed.SkillSeeder;
@@ -56,35 +54,12 @@ public class EmployeeEMS {
         GeneralHelper.printSection("DEPARTMENT GROUPING — HashMap (unordered)");
 
         Map<String, List<Employee>> groupedByDeptHash = new HashMap<>(company.groupByDepartment());
-
-        for (String department : groupedByDeptHash.keySet()) {
-            System.out.print(department + ": ");
-
-            List<Employee> emps = groupedByDeptHash.get(department);
-
-            for (int index = 0; index < emps.size(); index++) {
-                System.out.print(emps.get(index).getName());
-                if (index < emps.size() - 1) System.out.print(", ");
-            }
-            System.out.println();
-        }
+        GeneralHelper.printDepartmentMap(groupedByDeptHash);
 
         GeneralHelper.printSection("DEPARTMENT GROUPING — TreeMap (sorted by key)");
 
         Map<String, List<Employee>> groupedByDeptTree = new TreeMap<>(company.groupByDepartment());
-
-        for (String dept : groupedByDeptTree.keySet()) {
-            System.out.print(dept + ": ");
-
-            List<Employee> emps = groupedByDeptTree.get(dept);
-
-            for (int index = 0; index < emps.size(); index++) {
-                System.out.print(emps.get(index).getName());
-
-                if (index < emps.size() - 1) System.out.print(", ");
-            }
-            System.out.println();
-        }
+        GeneralHelper.printDepartmentMap(groupedByDeptTree);
 
         GeneralHelper.printSection("UNIQUE SKILLS — TreeSet (sorted alphabetically)");
 
