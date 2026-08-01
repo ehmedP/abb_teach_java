@@ -1,11 +1,11 @@
 package src.service;
 
-import org.w3c.dom.ls.LSOutput;
 import src.model.Book;
 import src.model.BorrowRecord;
 import src.model.User;
 
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class LibraryService {
@@ -78,18 +78,43 @@ public class LibraryService {
         Map<String, List<Book>> groupingBooksByAuthor = this.getGroupedBooksByAuthor(1950);
         Set<String> authorListByUser = this.uniqueAuthorsRead();
 
+        System.out.println("Average Rating: " + averageBookRating);
+
+        System.out.println();
+        System.out.println("Available Books (after 2000):");
+        availableBooks.forEach(System.out::println);
+
+        System.out.println();
+        System.out.println("Most Borrowed Book:");
+        mostBorrowedBook.ifPresentOrElse(
+                System.out::println,
+                () -> System.out.println("No borrow records found.")
+        );
+
+        System.out.println();
+        System.out.println("Currently Reading:");
+        currentBorrowedBooksByUserName.forEach((userName, currentBooks) ->
+                System.out.println(userName + " -> " + currentBooks));
+
+        System.out.println();
+        System.out.println("Books Grouped by Author (after 1950):");
+        groupingBooksByAuthor.forEach((author, authorBooks) ->
+                System.out.println(author + " -> " + authorBooks));
+
+        System.out.println("Books Grouped by Author (after 1950):");
+        System.out.println("Unique Authors Read:");
+        System.out.println(authorListByUser);
     }
 
     public Optional<User> findTopReaderOfMonth(List<User> users, Integer month, Integer year) {
 
+        Predicate<BorrowRecord> isInMonth = borrowRecord ->
+                borrowRecord.getBorrowedDate().getMonthValue() == month
+                        && borrowRecord.getBorrowedDate().getYear() == year;
+
         return users.stream()
-                .max(Comparator.comparingLong(user -> user.getBorrowHistory().stream()
-                        .filter(borrowRecord ->
-                                borrowRecord.getBorrowedDate().getMonthValue() == month
-                                        && borrowRecord.getBorrowedDate().getYear() == year
-                        )
-                        .count())
-                );
+                .filter(user -> user.getBorrowHistory().stream().anyMatch(isInMonth))
+                .max(Comparator.comparingLong(user -> user.getBorrowHistory().stream().filter(isInMonth).count()));
     }
 
     public Set<String> uniqueAuthorsRead() {

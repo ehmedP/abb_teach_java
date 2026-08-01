@@ -10,9 +10,7 @@ import java.util.List;
 
 public class UserSeeder {
 
-    public static List<User> seed() {
-
-        List<Book> books = BookSeeder.seed();
+    public static List<User> seed(List<Book> books) {
 
         Book book1984 = books.get(0);
         Book animalFarm = books.get(1);

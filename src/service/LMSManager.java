@@ -13,8 +13,8 @@ public class LMSManager {
 
     public void execute() {
 
-        List<User> users = UserSeeder.seed();
         List<Book> books = BookSeeder.seed();
+        List<User> users = UserSeeder.seed(books);
 
         LibraryService libraryService = new LibraryService(users, books);
 
@@ -23,32 +23,7 @@ public class LMSManager {
                 libraryService.getBooks().forEach(System.out::println)
         );
 
-        libraryService.analyzeLibrary();
-        printSection("LIBRARY ANALYSIS", () -> {
-            System.out.println("Average Rating: " + libraryService.getAverageRating());
-
-            System.out.println("\nAvailable Books (after 2000):");
-            libraryService.getAvailableBooksByGTYear(2000).forEach(System.out::println);
-
-            System.out.println("\nMost Borrowed Book:");
-            libraryService.getMostBorrowedBook()
-                    .ifPresentOrElse(
-                            System.out::println,
-                            () -> System.out.println("No borrow records found.")
-                    );
-
-            System.out.println("\nCurrently Reading:");
-            libraryService.getCurrentBorrowedBooksByUserName()
-                    .forEach((userName, currentBooks) -> System.out.println(userName + " -> " + currentBooks));
-
-            System.out.println("\nBooks Grouped by Author (after 1950):");
-            libraryService.getGroupedBooksByAuthor(1950)
-                    .forEach((author, authorBooks) -> System.out.println(author + " -> " + authorBooks));
-        });
-
-        printSection("UNIQUE AUTHORS READ", () ->
-                System.out.println(libraryService.uniqueAuthorsRead())
-        );
+        printSection("LIBRARY ANALYSIS", libraryService::analyzeLibrary);
 
         User aydin = users.get(0);
         printSection("RECOMMENDATION FOR " + aydin.getName().toUpperCase(), () ->
