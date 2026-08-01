@@ -1,17 +1,27 @@
 package src.model;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class BorrowRecord {
 
+    private static Integer nextId = 1;
+
+    private final Integer id;
     private Book book;
     private LocalDate borrowedDate;
     private LocalDate returnedDate;
 
     public BorrowRecord(Book book, LocalDate borrowedDate, LocalDate returnedDate) {
+        this.id = nextId++;
+
         this.book = book;
         this.borrowedDate = borrowedDate;
         this.returnedDate = returnedDate;
+    }
+
+    public Integer getId() {
+        return id;
     }
 
     public Book getBook() {
@@ -47,9 +57,22 @@ public class BorrowRecord {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        BorrowRecord that = (BorrowRecord) o;
+        return Objects.equals(getId(), that.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getId());
+    }
+
+    @Override
     public String toString() {
         return "BorrowRecord{" +
-                "book=" + book +
+                "id=" + id +
+                ", book=" + book +
                 ", borrowedDate=" + borrowedDate +
                 ", returnedDate=" + returnedDate +
                 '}';

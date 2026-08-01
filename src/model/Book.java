@@ -1,7 +1,12 @@
 package src.model;
 
+import java.util.Objects;
+
 public class Book {
 
+    private static Integer nextId = 1;
+
+    private final Integer id;
     private String title;
     private String author;
     private Integer year;
@@ -9,11 +14,17 @@ public class Book {
     private Boolean isAvailable;
 
     public Book(String title, String author, Integer year, Double rating, Boolean isAvailable) {
+        this.id = nextId++;
+
         this.title = title;
         this.author = author;
         this.year = year;
         this.rating = rating;
         this.isAvailable = isAvailable;
+    }
+
+    public Integer getId() {
+        return id;
     }
 
     public String getTitle() {
@@ -57,9 +68,22 @@ public class Book {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Book book = (Book) o;
+        return Objects.equals(getId(), book.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getId());
+    }
+
+    @Override
     public String toString() {
         return "Book{" +
-                "title='" + title + '\'' +
+                "id=" + id +
+                ", title='" + title + '\'' +
                 ", author='" + author + '\'' +
                 ", year=" + year +
                 ", rating=" + rating +

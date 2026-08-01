@@ -82,7 +82,7 @@ public class LibraryService {
 
     public Optional<User> findTopReaderOfMonth(List<User> users, Integer month, Integer year) {
 
-        return this.getUsers().stream()
+        return users.stream()
                 .max(Comparator.comparingLong(user -> user.getBorrowHistory().stream()
                         .filter(borrowRecord ->
                                 borrowRecord.getBorrowedDate().getMonthValue() == month
