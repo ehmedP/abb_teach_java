@@ -5,10 +5,7 @@ import src.model.Book;
 import src.model.BorrowRecord;
 import src.model.User;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class LibraryService {
@@ -79,11 +76,28 @@ public class LibraryService {
         Optional<Book> mostBorrowedBook = this.getMostBorrowedBook();
         Map<String, List<Book>> currentBorrowedBooksByUserName = this.getCurrentBorrowedBooksByUserName();
         Map<String, List<Book>> groupingBooksByAuthor = this.getGroupedBooksByAuthor(1950);
+        Set<String> authorListByUser = this.uniqueAuthorsRead();
 
     }
 
-    public void uniqueAuthorsRead() {
+    public Optional<User> findTopReaderOfMonth(List<User> users, Integer month, Integer year) {
 
+        return this.getUsers().stream()
+                .max(Comparator.comparingLong(user -> user.getBorrowHistory().stream()
+                        .filter(borrowRecord ->
+                                borrowRecord.getBorrowedDate().getMonthValue() == month
+                                        && borrowRecord.getBorrowedDate().getYear() == year
+                        )
+                        .count())
+                );
+    }
+
+    public Set<String> uniqueAuthorsRead() {
+
+        return this.getUsers().stream()
+                .flatMap(user -> user.getBorrowHistory().stream())
+                .map(borrowRecord -> borrowRecord.getBook().getAuthor())
+                .collect(Collectors.toSet());
     }
 
     public Double getAverageRating() {
