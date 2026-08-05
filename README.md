@@ -211,3 +211,9 @@ Reading Durations:
 Effective Java read in 18 days
 The Pragmatic Programmer read in 15 days
 ```
+
+## Terminal Output
+
+Example execution of the program:
+
+![Terminal Output](images/img.png)
