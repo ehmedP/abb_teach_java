@@ -210,3 +210,9 @@ Test ssenariləri belə seçilsin ki:
 ## Qeyd
 
 Bu tapşırıqda thread istifadə olunmur — bütün əməliyyatlar ardıcıl icra olunur. Diqqət mərkəzi exception hierarchy, exception chaining/wrapping, try-with-resources və müxtəlif collection növlərinin birgə istifadəsindədir.
+
+## Terminal Output
+
+Example execution of the program:
+
+![Terminal Output](images/img.png)
