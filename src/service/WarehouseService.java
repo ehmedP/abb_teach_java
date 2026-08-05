@@ -6,6 +6,7 @@ import src.exception.InvalidOrderException;
 import src.exception.ProductOutOfStockException;
 import src.exception.WarehouseConnectionException;
 import src.model.Order;
+import src.model.OrderResult;
 import src.model.Product;
 
 import java.util.*;
@@ -25,11 +26,8 @@ public class WarehouseService {
 
             for (Map.Entry<Integer, Integer> entry : order.getItems().entrySet()) {
 
-                Product product = products.get(entry.getKey());
-
-                if (product == null) {
-                    throw new InvalidOrderException("Məhsul tapılmadı: " + entry.getKey());
-                }
+                Product product = findProductById(entry.getKey())
+                        .orElseThrow(() -> new InvalidOrderException("Məhsul tapılmadı: " + entry.getKey()));
 
                 if (product.getStock() < entry.getValue()) {
                     throw new ProductOutOfStockException("Stok kifayət etmir: " + product.getName());
@@ -46,9 +44,15 @@ public class WarehouseService {
             }
 
             throw e;
+        } catch (WarehouseConnectionException e) {
+
+            logRecord("Connection failed for order: " + order.getId() + " for customer: " + order.getCustomerId() + ". Error: " + e.getMessage());
+
+            throw e;
+
         } finally {
 
-            logs.add("Order processed: " + order.getId() + " for customer: " + order.getCustomerId());
+            logRecord("Order processed: " + order.getId() + " for customer: " + order.getCustomerId());
         }
     }
 
@@ -61,7 +65,11 @@ public class WarehouseService {
     }
 
     public Optional<Product> findProductById(Integer id) {
-        return products.get(id);
+        return Optional.ofNullable(products.get(id));
+    }
+
+    public void logRecord(String message) {
+        logs.add(message);
     }
 
 }
