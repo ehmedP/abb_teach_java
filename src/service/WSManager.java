@@ -6,10 +6,12 @@ import src.exception.ProductOutOfStockException;
 import src.exception.WarehouseConnectionException;
 import src.model.Order;
 import src.model.OrderResult;
+import src.model.Product;
 import src.seed.SeedData;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class WSManager {
 
@@ -28,37 +30,77 @@ public class WSManager {
 
         List<OrderResult> results = new ArrayList<>();
 
+        header("SİFARİŞLƏRİN EMALI");
+
         for (Order order : warehouseService.getOrders()) {
+
+            System.out.printf("%n#%d  %s  %s%n",
+                    order.getId(),
+                    seedData.customerName(order.getCustomerId()),
+                    describeItems(seedData, order));
 
             try {
 
-                OrderResult result = warehouseService.processOrder(order);
-                results.add(result);
+                results.add(warehouseService.processOrder(order));
+                System.out.println("Uğurlu");
 
             } catch (CriticalSystemFailureException e) {
 
-                System.out.println("Critical system failure: " + e.getMessage());
-                System.out.println("Root cause: " + e.getCause().getMessage());
+                System.out.println("KRİTİK XƏTA : " + e.getMessage());
+                System.out.println("Əsl səbəb   : " + e.getCause().getMessage());
 
             } catch (InvalidOrderException | WarehouseConnectionException e) {
 
-                System.out.println("Order processing failed: " + e.getMessage());
+                System.out.println("Xəta [" + e.getErrorCode() + "] : " + e.getMessage());
 
             } catch (ProductOutOfStockException e) {
 
-                System.out.println("Order could not be completed due to insufficient stock: " + e.getMessage());
+                System.out.println("Stok xətası [" + e.getErrorCode() + "] : " + e.getMessage());
 
             } finally {
 
-                System.out.printf("Order %s for customer %s has been processed.%n",
-                        order.getId(),
-                        order.getCustomerId()
-                );
-
+                System.out.println("Status: " + order.getStatus());
             }
-
         }
 
+        summary(seedData, warehouseService, results);
+    }
+
+    private static void summary(SeedData seedData, WarehouseService warehouseService, List<OrderResult> results) {
+
+        header("NƏTİCƏ");
+
+        System.out.println("Uğurlu sifariş : " + results.size() + " / " + warehouseService.getOrders().size());
+
+        System.out.println("\nMüştərilər üzrə uğursuz sifariş sayı:");
+
+        warehouseService.getFailedProductsByCustomer().forEach((customerId, count) ->
+                System.out.println("    " + seedData.customerName(customerId) + " : " + count));
+
+        System.out.println("\nStoku 5-dən az olan məhsullar:");
+
+        warehouseService.printLowStockProducts(5);
+
+        System.out.println("\nLog qeydlərinin sayı : " + warehouseService.getLogs().size());
+    }
+
+    private static void header(String title) {
+        System.out.println("\n===== " + title + " =====");
+    }
+
+    private static String describeItems(SeedData seedData, Order order) {
+
+        if (order.getItems().isEmpty()) {
+            return "{boş}";
+        }
+
+        return order.getItems().entrySet().stream()
+                .map(entry -> {
+                    Product product = seedData.getProducts().get(entry.getKey());
+                    String name = product == null ? "naməlum#" + entry.getKey() : product.getName();
+                    return name + "×" + entry.getValue();
+                })
+                .collect(Collectors.joining(", ", "{", "}"));
     }
 
 }
