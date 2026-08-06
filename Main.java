@@ -1,3 +1,5 @@
+import src.service.WSManager;
+
 void main() {
 
 
@@ -6,5 +8,12 @@ void main() {
      * CriticalSystemFailureException kimi yenidən atılmalı (cause saxlanılmaqla).
      */
 
+
+    /**
+     * Tələb: processOrder() çağırılarkən həm ayrıca catch, həm də multi-catch (InvalidOrderException
+     * | WarehouseConnectionException) nümunələri göstərilməli.
+     */
+
+    WSManager.execute();
 
 }

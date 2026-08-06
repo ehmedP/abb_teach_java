@@ -64,6 +64,34 @@ public class Order {
         this.createdAt = createdAt;
     }
 
+    public void markProcessing() {
+        this.status = OrderStatus.PROCESSING;
+    }
+
+    public void markCompleted() {
+        this.status = OrderStatus.COMPLETED;
+    }
+
+    public void markFailed() {
+        this.status = OrderStatus.FAILED;
+    }
+
+    public boolean isPending() {
+        return this.status == OrderStatus.PENDING;
+    }
+
+    public boolean isProcessing() {
+        return this.status == OrderStatus.PROCESSING;
+    }
+
+    public boolean isCompleted() {
+        return this.status == OrderStatus.COMPLETED;
+    }
+
+    public boolean isFailed() {
+        return this.status == OrderStatus.FAILED;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;

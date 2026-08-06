@@ -13,12 +13,28 @@ import java.util.*;
 
 public class WarehouseService {
 
-    private Map<Integer, Product> products;
-    private Queue<Order> orders;
-    private TreeSet<Order> orderHistory;
-    private List<String> logs;
-    private PriorityQueue<Product> productQueue;
-    private Map<Integer, Integer> failedProductsByCustomer;
+    private final Map<Integer, Product> products;
+    private final Queue<Order> orders;
+    private final TreeSet<Order> orderHistory;
+    private final List<String> logs;
+    private final PriorityQueue<Product> productQueue;
+    private final Map<Integer, Integer> failedProductsByCustomer;
+
+    public WarehouseService(
+            Map<Integer, Product> products,
+            Queue<Order> orders,
+            TreeSet<Order> orderHistory,
+            List<String> logs,
+            PriorityQueue<Product> productQueue,
+            Map<Integer, Integer> failedProductsByCustomer
+    ) {
+        this.products = products;
+        this.orders = orders;
+        this.orderHistory = orderHistory;
+        this.logs = logs;
+        this.productQueue = productQueue;
+        this.failedProductsByCustomer = failedProductsByCustomer;
+    }
 
     public OrderResult processOrder(Order order) throws InvalidOrderException, ProductOutOfStockException, WarehouseConnectionException {
 
@@ -34,9 +50,14 @@ public class WarehouseService {
                 }
             }
 
+            order.markCompleted();
+
             return new OrderResult(order.getId(), true, null);
 
         } catch (ProductOutOfStockException | InvalidOrderException e) {
+
+            order.markFailed();
+
             incrementFailureCount(order.getCustomerId());
 
             if (getFailureCount(order.getCustomerId()) >= 3) {
@@ -45,6 +66,8 @@ public class WarehouseService {
 
             throw e;
         } catch (WarehouseConnectionException e) {
+
+            order.markFailed();
 
             logRecord("Connection failed for order: " + order.getId() + " for customer: " + order.getCustomerId() + ". Error: " + e.getMessage());
 
@@ -72,4 +95,27 @@ public class WarehouseService {
         logs.add(message);
     }
 
+    public Map<Integer, Product> getProducts() {
+        return products;
+    }
+
+    public Queue<Order> getOrders() {
+        return orders;
+    }
+
+    public TreeSet<Order> getOrderHistory() {
+        return orderHistory;
+    }
+
+    public List<String> getLogs() {
+        return logs;
+    }
+
+    public PriorityQueue<Product> getProductQueue() {
+        return productQueue;
+    }
+
+    public Map<Integer, Integer> getFailedProductsByCustomer() {
+        return failedProductsByCustomer;
+    }
 }
