@@ -83,6 +83,12 @@ public class WarehouseService {
         failedProductsByCustomer.put(customerId, failedProductsByCustomer.getOrDefault(customerId, 0) + 1);
     }
 
+    public void printLowStockProducts(Integer stockCount) {
+        productQueue.stream()
+                .filter(product -> product.getStock() < stockCount)
+                .forEach(product -> System.out.println("Low stock product: " + product.getName() + ", Stock: " + product.getStock()));
+    }
+
     public Integer getFailureCount(Integer customerId) {
         return failedProductsByCustomer.get(customerId);
     }
