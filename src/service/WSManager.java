@@ -1,12 +1,12 @@
 package src.service;
 
 import src.exception.CriticalSystemFailureException;
+import src.functional.OrderItemFormatter;
 import src.exception.InvalidOrderException;
 import src.exception.ProductOutOfStockException;
 import src.exception.WarehouseConnectionException;
 import src.model.Order;
 import src.model.OrderResult;
-import src.model.Product;
 import src.seed.SeedData;
 
 import java.util.ArrayList;
@@ -94,12 +94,10 @@ public class WSManager {
             return "{boş}";
         }
 
+        OrderItemFormatter formatter = OrderItemFormatter.withProductNames(seedData.getProducts());
+
         return order.getItems().entrySet().stream()
-                .map(entry -> {
-                    Product product = seedData.getProducts().get(entry.getKey());
-                    String name = product == null ? "naməlum#" + entry.getKey() : product.getName();
-                    return name + "×" + entry.getValue();
-                })
+                .map(formatter::formatItem)
                 .collect(Collectors.joining(", ", "{", "}"));
     }
 
