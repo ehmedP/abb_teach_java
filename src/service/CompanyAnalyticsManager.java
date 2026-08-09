@@ -25,7 +25,7 @@ public class CompanyAnalyticsManager {
         this.printDepartmentAnalytics();
         System.out.println("===========================================================================================");
         System.out.println("Task C\n");
-        this.printDepartmentAnalytics();
+        this.printSkillAnalytics();
         System.out.println("===========================================================================================");
     }
 
@@ -63,6 +63,57 @@ public class CompanyAnalyticsManager {
                 (employee) -> System.out.println("Youngest Employee: " + employee.name() + ", Age: " + employee.age()),
                 () -> System.out.println("Youngest Employee: N/A, Age: N/A")
         );
+    }
+
+    public void printSkillAnalytics() {
+
+        System.out.println(" Skils by cound: \n");
+
+        Map<String, Long> skillCount = employees.stream()
+                .flatMap((employee -> employee.skills().stream()))
+                .collect(Collectors.groupingBy(skill -> skill, Collectors.counting()));
+
+        skillCount.forEach((skill, count) -> {
+            System.out.println("Skill: " + skill + ", Count: " + count);
+        });
+
+        Map<String, Long> sortByPopularity = skillCount.entrySet().stream()
+                .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (e1, e2) -> e1,
+                        LinkedHashMap::new
+                ));
+
+        System.out.println("\n\n Skils by popularity (limit 3): \n");
+
+        sortByPopularity.entrySet().stream().limit(3).forEach(entry -> {
+            System.out.println("Skill: " + entry.getKey() + ", Count: " + entry.getValue());
+        });
+
+        Map<String, Set<String>> skillsByDepartment = employees.stream()
+                .collect(Collectors.groupingBy(
+                        Employee::department,
+                        Collectors.flatMapping(employee -> employee.skills().stream(), Collectors.toSet())
+                ));
+
+        System.out.println("\n\n Skills by Department: \n");
+        skillsByDepartment.forEach((department, skills) -> {
+            System.out.println("Department: " + department + ", Skills: " + skills);
+        });
+
+        List<List<String>> noneMatchSkillDepartments = skillsByDepartment.entrySet().stream()
+                .flatMap(department1 ->
+                        skillsByDepartment.entrySet().stream()
+                                .filter(department2 -> department1.getKey().compareTo(department2.getKey()) < 0)
+                                .filter(department2 -> department1.getValue().stream().noneMatch(department2.getValue()::contains))
+                                .map(department2 -> List.of(department1.getKey(), department2.getKey()))
+                ).toList();
+
+        System.out.println("\n\n None Match Skill Departments: \n");
+        System.out.println(noneMatchSkillDepartments);
+
     }
 
     // Helper methods start
