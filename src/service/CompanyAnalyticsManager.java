@@ -21,31 +21,43 @@ public class CompanyAnalyticsManager {
 
     public void execute() {
 
-        System.out.println("===========================================================================================");
-        System.out.println("Task A\n");
-        this.printGeneralReport();
-        System.out.println("===========================================================================================");
-        System.out.println("Task B\n");
-        this.printDepartmentAnalytics();
-        System.out.println("===========================================================================================");
-        System.out.println("Task C\n");
-        this.printSkillAnalytics();
-        System.out.println("===========================================================================================");
-        System.out.println("Task D\n");
-        this.printAgeExperienceReport();
-        System.out.println("===========================================================================================");
-        System.out.println("Task E\n");
-        this.printManagementStructureReport();
-        System.out.println("===========================================================================================");
-        System.out.println("Task F\n");
-        this.printMaxAndMinSalaryReport();
-        System.out.println("===========================================================================================");
-        System.out.println("Task G\n");
-        this.printGroupingEmployeesByDepartmentV2();
-        System.out.println("===========================================================================================");
+        System.out.println(
+                this.generateReport()
+        );
+
     }
 
-    public void printDepartmentAnalytics() {
+    public String generateReport() {
+
+        StringBuilder reportBuilder = new StringBuilder();
+
+        reportBuilder.append("===========================================================================================\n");
+        reportBuilder.append("Task A\n\n");
+        reportBuilder.append(this.generateGeneralReport()).append("\n");
+        reportBuilder.append("===========================================================================================\n");
+        reportBuilder.append("Task B\n\n");
+        reportBuilder.append(this.generateDepartmentAnalytics()).append("\n");
+        reportBuilder.append("===========================================================================================\n");
+        reportBuilder.append("Task C\n\n");
+        reportBuilder.append(this.generateSkillAnalytics()).append("\n");
+        reportBuilder.append("===========================================================================================\n");
+        reportBuilder.append("Task D\n\n");
+        reportBuilder.append(this.generateAgeExperienceReport()).append("\n");
+        reportBuilder.append("===========================================================================================\n");
+        reportBuilder.append("Task E\n\n");
+        reportBuilder.append(this.generateManagementStructureReport()).append("\n");
+        reportBuilder.append("===========================================================================================\n");
+        reportBuilder.append("Task F\n\n");
+        reportBuilder.append(this.generateMaxAndMinSalaryReport()).append("\n");
+        reportBuilder.append("===========================================================================================\n");
+        reportBuilder.append("Task G\n\n");
+        reportBuilder.append(this.generateGroupingEmployeesByDepartmentV2()).append("\n");
+        reportBuilder.append("===========================================================================================\n");
+
+        return reportBuilder.toString();
+    }
+
+    public String generateDepartmentAnalytics() {
 
         Map<String, DepartmentSummary> departmentSummaries = employees.stream()
                 .collect(
@@ -62,63 +74,58 @@ public class CompanyAnalyticsManager {
                         )
                 );
 
-        departmentSummaries.forEach((department, summary) -> {
-            System.out.println("Department: " + department);
-            System.out.println(summary);
-        });
+        String departmentReport = departmentSummaries.entrySet().stream()
+                .map(entry -> "Department: " + entry.getKey() + "\n" + entry.getValue())
+                .collect(Collectors.joining("\n"));
 
-        departmentSummaries.entrySet().stream()
+        String mostExpensiveDepartment = departmentSummaries.entrySet().stream()
                 .max(Map.Entry.comparingByValue(
                         Comparator.comparingDouble(DepartmentSummary::totalSalary)
                 ))
-                .ifPresentOrElse(
-                        (entry) -> System.out.println("Most Expensive department: " + entry.getKey() + ", Total Salary: " + entry.getValue().totalSalary()),
-                        () -> System.out.println("Most Expensive department: N/A")
-                );
+                .map(entry -> "Most Expensive department: " + entry.getKey() + ", Total Salary: " + entry.getValue().totalSalary())
+                .orElse("Most Expensive department: N/A");
+
+        return departmentReport + "\n" + mostExpensiveDepartment;
     }
 
-    public void printGeneralReport() {
+    public String generateGeneralReport() {
 
-        System.out.println("Total Employee Count: " + employees.size());
-
-        Double totalSalary = employees.stream()
+        double totalSalary = employees.stream()
                 .mapToDouble(Employee::salary)
                 .sum();
-
-        System.out.println("Total Salary: " + Math.round(totalSalary * 100.0) / 100.0);
 
         OptionalDouble avgSalary = employees.stream()
                 .mapToDouble(Employee::salary)
                 .average();
 
-        System.out.println("Average Salary: " + avgSalary.orElse(0.0));
-
-        employees.stream()
+        String oldestEmployee = employees.stream()
                 .max(Comparator.comparingInt(Employee::age))
-                .ifPresentOrElse(
-                        (employee) -> System.out.println("Oldest Employee: " + employee.name() + ", Age: " + employee.age()),
-                        () -> System.out.println("Oldest Employee: N/A, Age: N/A")
-                );
+                .map(employee -> "Oldest Employee: " + employee.name() + ", Age: " + employee.age())
+                .orElse("Oldest Employee: N/A, Age: N/A");
 
-        employees.stream()
+        String youngestEmployee = employees.stream()
                 .min(Comparator.comparingInt(Employee::age))
-                .ifPresentOrElse(
-                        (employee) -> System.out.println("Youngest Employee: " + employee.name() + ", Age: " + employee.age()),
-                        () -> System.out.println("Youngest Employee: N/A, Age: N/A")
-                );
+                .map(employee -> "Youngest Employee: " + employee.name() + ", Age: " + employee.age())
+                .orElse("Youngest Employee: N/A, Age: N/A");
+
+        return String.join("\n",
+                "Total Employee Count: " + employees.size(),
+                "Total Salary: " + Math.round(totalSalary * 100.0) / 100.0,
+                "Average Salary: " + avgSalary.orElse(0.0),
+                oldestEmployee,
+                youngestEmployee
+        );
     }
 
-    public void printSkillAnalytics() {
-
-        System.out.println(" Skils by cound: \n");
+    public String generateSkillAnalytics() {
 
         Map<String, Long> skillCount = employees.stream()
                 .flatMap((employee -> employee.skills().stream()))
                 .collect(Collectors.groupingBy(skill -> skill, Collectors.counting()));
 
-        skillCount.forEach((skill, count) -> {
-            System.out.println("Skill: " + skill + ", Count: " + count);
-        });
+        String skillCountReport = skillCount.entrySet().stream()
+                .map(entry -> "Skill: " + entry.getKey() + ", Count: " + entry.getValue())
+                .collect(Collectors.joining("\n"));
 
         Map<String, Long> sortByPopularity = skillCount.entrySet().stream()
                 .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
@@ -129,11 +136,10 @@ public class CompanyAnalyticsManager {
                         LinkedHashMap::new
                 ));
 
-        System.out.println("\n\n Skils by popularity (limit 3): \n");
-
-        sortByPopularity.entrySet().stream().limit(3).forEach(entry -> {
-            System.out.println("Skill: " + entry.getKey() + ", Count: " + entry.getValue());
-        });
+        String popularSkillReport = sortByPopularity.entrySet().stream()
+                .limit(3)
+                .map(entry -> "Skill: " + entry.getKey() + ", Count: " + entry.getValue())
+                .collect(Collectors.joining("\n"));
 
         Map<String, Set<String>> skillsByDepartment = employees.stream()
                 .collect(Collectors.groupingBy(
@@ -141,10 +147,9 @@ public class CompanyAnalyticsManager {
                         Collectors.flatMapping(employee -> employee.skills().stream(), Collectors.toSet())
                 ));
 
-        System.out.println("\n\n Skills by Department: \n");
-        skillsByDepartment.forEach((department, skills) -> {
-            System.out.println("Department: " + department + ", Skills: " + skills);
-        });
+        String skillsByDepartmentReport = skillsByDepartment.entrySet().stream()
+                .map(entry -> "Department: " + entry.getKey() + ", Skills: " + entry.getValue())
+                .collect(Collectors.joining("\n"));
 
         List<List<String>> noneMatchSkillDepartments = skillsByDepartment.entrySet().stream()
                 .flatMap(department1 ->
@@ -154,11 +159,19 @@ public class CompanyAnalyticsManager {
                                 .map(department2 -> List.of(department1.getKey(), department2.getKey()))
                 ).toList();
 
-        System.out.println("\n\n None Match Skill Departments: \n");
-        System.out.println(noneMatchSkillDepartments);
+        return String.join("\n",
+                " Skills by count: \n",
+                skillCountReport,
+                "\n Skills by popularity (limit 3): \n",
+                popularSkillReport,
+                "\n Skills by Department: \n",
+                skillsByDepartmentReport,
+                "\n None Match Skill Departments: \n",
+                noneMatchSkillDepartments.toString()
+        );
     }
 
-    public void printAgeExperienceReport() {
+    public String generateAgeExperienceReport() {
 
         Map<ExperienceGroupEnum, Double> experienceReport = employees.stream()
                 .collect(
@@ -168,14 +181,14 @@ public class CompanyAnalyticsManager {
                         )
                 );
 
-        experienceReport.forEach((experienceGroup, avgSalary) ->
-                System.out.printf("Experience Group: %s, Average Salary: %.2f%n",
-                        experienceGroup.label(), avgSalary
-                )
-        );
+        return experienceReport.entrySet().stream()
+                .map(entry -> "Experience Group: %s, Average Salary: %.2f".formatted(
+                        entry.getKey().label(), entry.getValue()
+                ))
+                .collect(Collectors.joining("\n"));
     }
 
-    public void printManagementStructureReport() {
+    public String generateManagementStructureReport() {
 
         Map<String, Long> managerEmployees = employees.stream()
                 // filter yox flatmap isletmeyime sebeb optional null olanlari temizlemek idi burda, performans cehetden yeqinki filter daha yaxsi olardi amma
@@ -187,61 +200,55 @@ public class CompanyAnalyticsManager {
                         )
                 );
 
-        managerEmployees.forEach((managerName, count) ->
-                System.out.println("Manager: " + managerName + ", Employees: " + count)
-        );
+        return managerEmployees.entrySet().stream()
+                .map(entry -> "Manager: " + entry.getKey() + ", Employees: " + entry.getValue())
+                .collect(Collectors.joining("\n"));
     }
 
-    public void printMaxAndMinSalaryReport() {
+    public String generateMaxAndMinSalaryReport() {
 
         Map<String, Optional<Employee>> minMaxValues = employees.stream()
                 .collect(
                         Collectors.teeing(
                                 Collectors.minBy(Comparator.comparingDouble(Employee::salary).thenComparing(Employee::name)),
                                 Collectors.maxBy(Comparator.comparingDouble(Employee::salary).thenComparing(Employee::name)),
-                                (min, max) -> Map.of(
-                                        "Min", min,
-                                        "Max", max
+                                (min, max) -> new LinkedHashMap<>(
+                                        Map.of(
+                                                "Min", min,
+                                                "Max", max
+                                        )
                                 )
                         )
                 );
 
-        minMaxValues.forEach((key, employeeOptional) -> {
-
-            if (employeeOptional.isPresent()) {
-                Employee employee = employeeOptional.get();
-                System.out.println(key + " salary: " + employee.salary() + ", Employee: " + employee.name());
-            } else {
-                System.out.println(key + " salary: N/A, Employee: N/A");
-            }
-        });
+        return minMaxValues.entrySet().stream()
+                .map(entry -> entry.getValue()
+                        .map(employee -> entry.getKey() + " salary: " + employee.salary() + ", Employee: " + employee.name())
+                        .orElse(entry.getKey() + " salary: N/A, Employee: N/A")
+                )
+                .collect(Collectors.joining("\n"));
     }
 
     // Variant A
-    public void printGroupingEmployeesByDepartment() {
+    public String generateGroupingEmployeesByDepartment() {
 
-        String groupingEmployees = employees.stream()
+        return employees.stream()
                 .collect(
                         Collectors.groupingBy(
                                 Employee::department,
+                                TreeMap::new,
                                 Collectors.mapping(Employee::name, Collectors.joining(", "))
                         )
                 ).entrySet().stream()
-                .map(entry -> "Department: " + entry.getKey() + ", Employees: " + entry.getValue())
+                .map(entry -> entry.getKey() + ": " + entry.getValue())
                 .collect(Collectors.joining("\n"));
-
-
-        System.out.println(groupingEmployees);
     }
 
     // Variant B
-    public void printGroupingEmployeesByDepartmentV2() {
+    public String generateGroupingEmployeesByDepartmentV2() {
 
-        String groupingEmployees = employees.stream()
+        return employees.stream()
                 .collect(new DepartmentEmployeeCollector());
-
-
-        System.out.println(groupingEmployees);
     }
 
     // Helper methods

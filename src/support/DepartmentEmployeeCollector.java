@@ -10,6 +10,9 @@ import java.util.function.Supplier;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+/**
+ * Texniki olaraq oz collectorumdur bu (mence)
+ */
 public class DepartmentEmployeeCollector implements Collector<Employee, Map<String, List<String>>, String> {
 
 
@@ -20,7 +23,7 @@ public class DepartmentEmployeeCollector implements Collector<Employee, Map<Stri
      */
     @Override
     public Supplier<Map<String, List<String>>> supplier() {
-        return HashMap::new;
+        return TreeMap::new;
     }
 
     /**
@@ -45,8 +48,16 @@ public class DepartmentEmployeeCollector implements Collector<Employee, Map<Stri
      */
     @Override
     public BinaryOperator<Map<String, List<String>>> combiner() {
-        // paralel stream edilmiyecek burda
-        return null;
+        return (left, right) -> {
+            right.forEach((department, names) ->
+                    left.merge(department, names, (leftNames, rightNames) -> {
+                        leftNames.addAll(rightNames);
+                        return leftNames;
+                    })
+            );
+
+            return left;
+        };
     }
 
     /**
@@ -63,11 +74,7 @@ public class DepartmentEmployeeCollector implements Collector<Employee, Map<Stri
     @Override
     public Function<Map<String, List<String>>, String> finisher() {
         return map -> map.entrySet().stream()
-                .map(entry ->
-                        "Department: " + entry.getKey()
-                                + ", Employees: "
-                                + String.join(", ", entry.getValue())
-                )
+                .map(entry -> entry.getKey() + ": " + String.join(", ", entry.getValue()))
                 .collect(Collectors.joining("\n"));
     }
 
