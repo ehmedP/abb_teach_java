@@ -36,6 +36,9 @@ public class CompanyAnalyticsManager {
         System.out.println("Task E\n");
         this.printManagementStructureReport();
         System.out.println("===========================================================================================");
+        System.out.println("Task F\n");
+        this.printMaxAndMinSalaryReport();
+        System.out.println("===========================================================================================");
     }
 
     public void printDepartmentAnalytics() {
@@ -183,6 +186,31 @@ public class CompanyAnalyticsManager {
         managerEmployees.forEach((managerName, count) ->
                 System.out.println("Manager: " + managerName + ", Employees: " + count)
         );
+    }
+
+    public void printMaxAndMinSalaryReport() {
+
+        Map<String, Optional<Employee>> minMaxValues = employees.stream()
+                .collect(
+                        Collectors.teeing(
+                                Collectors.minBy(Comparator.comparingDouble(Employee::salary).thenComparing(Employee::name)),
+                                Collectors.maxBy(Comparator.comparingDouble(Employee::salary).thenComparing(Employee::name)),
+                                (min, max) -> Map.of(
+                                        "Min", min,
+                                        "Max", max
+                                )
+                        )
+                );
+
+        minMaxValues.forEach((key, employeeOptional) -> {
+
+            if (employeeOptional.isPresent()) {
+                Employee employee = employeeOptional.get();
+                System.out.println(key + " salary: " + employee.salary() + ", Employee: " + employee.name());
+            } else {
+                System.out.println(key + " salary: N/A, Employee: N/A");
+            }
+        });
     }
 
     // Helper methods
