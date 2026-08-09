@@ -33,6 +33,9 @@ public class CompanyAnalyticsManager {
         System.out.println("Task D\n");
         this.printAgeExperienceReport();
         System.out.println("===========================================================================================");
+        System.out.println("Task E\n");
+        this.printManagementStructureReport();
+        System.out.println("===========================================================================================");
     }
 
     public void printDepartmentAnalytics() {
@@ -162,6 +165,23 @@ public class CompanyAnalyticsManager {
                 System.out.printf("Experience Group: %s, Average Salary: %.2f%n",
                         experienceGroup.label(), avgSalary
                 )
+        );
+    }
+
+    public void printManagementStructureReport() {
+
+        Map<String, Long> managerEmployees = employees.stream()
+                // filter yox flatmap isletmeyime sebeb optional null olanlari temizlemek idi burda, performans cehetden yeqinki filter daha yaxsi olardi amma
+                .flatMap(employee -> employee.managerName().stream())
+                .collect(
+                        Collectors.groupingBy(
+                                managerName -> managerName,
+                                Collectors.counting()
+                        )
+                );
+
+        managerEmployees.forEach((managerName, count) ->
+                System.out.println("Manager: " + managerName + ", Employees: " + count)
         );
     }
 
