@@ -10,13 +10,21 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class CompanyAnalyticsManager {
 
     private final List<Employee> employees;
 
+    private final boolean parallel;
+
     public CompanyAnalyticsManager() {
+        this(false);
+    }
+
+    public CompanyAnalyticsManager(boolean parallel) {
         this.employees = EmployeeSeed.seed();
+        this.parallel = parallel;
     }
 
     public void execute() {
@@ -59,7 +67,7 @@ public class CompanyAnalyticsManager {
 
     public String generateDepartmentAnalytics(List<Employee> employees) {
 
-        Map<String, DepartmentSummary> departmentSummaries = employees.stream()
+        Map<String, DepartmentSummary> departmentSummaries = this.streamOf(employees)
                 .collect(
                         Collectors.groupingBy(
                                 Employee::department,
@@ -90,20 +98,20 @@ public class CompanyAnalyticsManager {
 
     public String generateGeneralReport(List<Employee> employees) {
 
-        double totalSalary = employees.stream()
+        double totalSalary = this.streamOf(employees)
                 .mapToDouble(Employee::salary)
                 .sum();
 
-        OptionalDouble avgSalary = employees.stream()
+        OptionalDouble avgSalary = this.streamOf(employees)
                 .mapToDouble(Employee::salary)
                 .average();
 
-        String oldestEmployee = employees.stream()
+        String oldestEmployee = this.streamOf(employees)
                 .max(Comparator.comparingInt(Employee::age))
                 .map(employee -> "Oldest Employee: " + employee.name() + ", Age: " + employee.age())
                 .orElse("Oldest Employee: N/A, Age: N/A");
 
-        String youngestEmployee = employees.stream()
+        String youngestEmployee = this.streamOf(employees)
                 .min(Comparator.comparingInt(Employee::age))
                 .map(employee -> "Youngest Employee: " + employee.name() + ", Age: " + employee.age())
                 .orElse("Youngest Employee: N/A, Age: N/A");
@@ -119,7 +127,7 @@ public class CompanyAnalyticsManager {
 
     public String generateSkillAnalytics(List<Employee> employees) {
 
-        Map<String, Long> skillCount = employees.stream()
+        Map<String, Long> skillCount = this.streamOf(employees)
                 .flatMap((employee -> employee.skills().stream()))
                 .collect(Collectors.groupingBy(skill -> skill, Collectors.counting()));
 
@@ -141,7 +149,7 @@ public class CompanyAnalyticsManager {
                 .map(entry -> "Skill: " + entry.getKey() + ", Count: " + entry.getValue())
                 .collect(Collectors.joining("\n"));
 
-        Map<String, Set<String>> skillsByDepartment = employees.stream()
+        Map<String, Set<String>> skillsByDepartment = this.streamOf(employees)
                 .collect(Collectors.groupingBy(
                         Employee::department,
                         Collectors.flatMapping(employee -> employee.skills().stream(), Collectors.toSet())
@@ -173,7 +181,7 @@ public class CompanyAnalyticsManager {
 
     public String generateAgeExperienceReport(List<Employee> employees) {
 
-        Map<ExperienceGroupEnum, Double> experienceReport = employees.stream()
+        Map<ExperienceGroupEnum, Double> experienceReport = this.streamOf(employees)
                 .collect(
                         Collectors.groupingBy(
                                 (employee) -> getExperienceGroup(employee.hireDate()),
@@ -190,7 +198,7 @@ public class CompanyAnalyticsManager {
 
     public String generateManagementStructureReport(List<Employee> employees) {
 
-        Map<String, Long> managerEmployees = employees.stream()
+        Map<String, Long> managerEmployees = this.streamOf(employees)
                 // filter yox flatmap isletmeyime sebeb optional null olanlari temizlemek idi burda, performans cehetden yeqinki filter daha yaxsi olardi amma
                 .flatMap(employee -> employee.managerName().stream())
                 .collect(
@@ -211,7 +219,7 @@ public class CompanyAnalyticsManager {
 
     public String generateMaxAndMinSalaryReport(List<Employee> employees) {
 
-        Map<String, Optional<Employee>> minMaxValues = employees.stream()
+        Map<String, Optional<Employee>> minMaxValues = this.streamOf(employees)
                 .collect(
                         Collectors.teeing(
                                 Collectors.minBy(Comparator.comparingDouble(Employee::salary).thenComparing(Employee::name)),
@@ -236,7 +244,7 @@ public class CompanyAnalyticsManager {
     // Variant A
     public String generateGroupingEmployeesByDepartment(List<Employee> employees) {
 
-        return employees.stream()
+        return this.streamOf(employees)
                 .collect(
                         Collectors.groupingBy(
                                 Employee::department,
@@ -251,11 +259,15 @@ public class CompanyAnalyticsManager {
     // Variant B
     public String generateGroupingEmployeesByDepartmentV2(List<Employee> employees) {
 
-        return employees.stream()
+        return this.streamOf(employees)
                 .collect(new DepartmentEmployeeCollector());
     }
 
     // Helper methods
+
+    private Stream<Employee> streamOf(List<Employee> employees) {
+        return parallel ? employees.parallelStream() : employees.stream();
+    }
 
     private ExperienceGroupEnum getExperienceGroup(LocalDate hireDate) {
         long years = ChronoUnit.YEARS.between(hireDate, LocalDate.now());

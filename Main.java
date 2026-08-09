@@ -1,3 +1,4 @@
+import src.benchmark.StreamPerformanceBenchmark;
 import src.service.CompanyAnalyticsManager;
 
 void main() {
@@ -19,18 +20,19 @@ void main() {
 
     /**
      *
-     *
      * Eyni hesabatı 500,000 elementlik süni generasiya olunmuş List<Employee> üzərində işlət:
      * • Bir dəfə stream() ilə, bir dəfə parallelStream() ilə çalışdır, hər ikisinin vaxtını ölç
      * • Hansı bölmələrdə paralel streamin fayda verdiyini qeyd et
      * • Hansı bölmələrdə (məsələn kiçik map-lərdə) overhead yaratdığını qeyd et
      *
-     *
      * =================================================================================================================
      *
      * 500,000 Employee üzərində stream() və parallelStream() müqayisə.
      *
-     *
      */
+
+    StreamPerformanceBenchmark benchmark = new StreamPerformanceBenchmark();
+
+    benchmark.execute();
 
 }
