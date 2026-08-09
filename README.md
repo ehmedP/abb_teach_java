@@ -156,3 +156,9 @@ Metodika: hər bölmə üçün 2 warmup keçidi (JIT isinsin), sonra 3 ölçül�
 ## Qeyd
 
 Diqqət mərkəzi Stream API-nin təkib olunmuş (composed) istifadəsindədir: `groupingBy` + downstream collector-lər, `flatMap`, `teeing`, `collectingAndThen`, `Optional` ilə təhlükəsiz idarəetmə və sıfırdan yazılmış `Collector`. Klassik dövrlər yalnız test datasının generasiyasında icazəlidir.
+
+## Terminal Output
+
+Example execution of the program:
+
+![Terminal Output](images/img.png)
