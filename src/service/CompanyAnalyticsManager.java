@@ -22,42 +22,42 @@ public class CompanyAnalyticsManager {
     public void execute() {
 
         System.out.println(
-                this.generateReport()
+                this.generateReport(this.employees)
         );
 
     }
 
-    public String generateReport() {
+    public String generateReport(List<Employee> employees) {
 
         StringBuilder reportBuilder = new StringBuilder();
 
         reportBuilder.append("===========================================================================================\n");
         reportBuilder.append("Task A\n\n");
-        reportBuilder.append(this.generateGeneralReport()).append("\n");
+        reportBuilder.append(this.generateGeneralReport(employees)).append("\n");
         reportBuilder.append("===========================================================================================\n");
         reportBuilder.append("Task B\n\n");
-        reportBuilder.append(this.generateDepartmentAnalytics()).append("\n");
+        reportBuilder.append(this.generateDepartmentAnalytics(employees)).append("\n");
         reportBuilder.append("===========================================================================================\n");
         reportBuilder.append("Task C\n\n");
-        reportBuilder.append(this.generateSkillAnalytics()).append("\n");
+        reportBuilder.append(this.generateSkillAnalytics(employees)).append("\n");
         reportBuilder.append("===========================================================================================\n");
         reportBuilder.append("Task D\n\n");
-        reportBuilder.append(this.generateAgeExperienceReport()).append("\n");
+        reportBuilder.append(this.generateAgeExperienceReport(employees)).append("\n");
         reportBuilder.append("===========================================================================================\n");
         reportBuilder.append("Task E\n\n");
-        reportBuilder.append(this.generateManagementStructureReport()).append("\n");
+        reportBuilder.append(this.generateManagementStructureReport(employees)).append("\n");
         reportBuilder.append("===========================================================================================\n");
         reportBuilder.append("Task F\n\n");
-        reportBuilder.append(this.generateMaxAndMinSalaryReport()).append("\n");
+        reportBuilder.append(this.generateMaxAndMinSalaryReport(employees)).append("\n");
         reportBuilder.append("===========================================================================================\n");
         reportBuilder.append("Task G\n\n");
-        reportBuilder.append(this.generateGroupingEmployeesByDepartmentV2()).append("\n");
+        reportBuilder.append(this.generateGroupingEmployeesByDepartmentV2(employees)).append("\n");
         reportBuilder.append("===========================================================================================\n");
 
         return reportBuilder.toString();
     }
 
-    public String generateDepartmentAnalytics() {
+    public String generateDepartmentAnalytics(List<Employee> employees) {
 
         Map<String, DepartmentSummary> departmentSummaries = employees.stream()
                 .collect(
@@ -88,7 +88,7 @@ public class CompanyAnalyticsManager {
         return departmentReport + "\n" + mostExpensiveDepartment;
     }
 
-    public String generateGeneralReport() {
+    public String generateGeneralReport(List<Employee> employees) {
 
         double totalSalary = employees.stream()
                 .mapToDouble(Employee::salary)
@@ -117,7 +117,7 @@ public class CompanyAnalyticsManager {
         );
     }
 
-    public String generateSkillAnalytics() {
+    public String generateSkillAnalytics(List<Employee> employees) {
 
         Map<String, Long> skillCount = employees.stream()
                 .flatMap((employee -> employee.skills().stream()))
@@ -171,7 +171,7 @@ public class CompanyAnalyticsManager {
         );
     }
 
-    public String generateAgeExperienceReport() {
+    public String generateAgeExperienceReport(List<Employee> employees) {
 
         Map<ExperienceGroupEnum, Double> experienceReport = employees.stream()
                 .collect(
@@ -188,7 +188,7 @@ public class CompanyAnalyticsManager {
                 .collect(Collectors.joining("\n"));
     }
 
-    public String generateManagementStructureReport() {
+    public String generateManagementStructureReport(List<Employee> employees) {
 
         Map<String, Long> managerEmployees = employees.stream()
                 // filter yox flatmap isletmeyime sebeb optional null olanlari temizlemek idi burda, performans cehetden yeqinki filter daha yaxsi olardi amma
@@ -200,12 +200,16 @@ public class CompanyAnalyticsManager {
                         )
                 );
 
-        return managerEmployees.entrySet().stream()
+        String managerCountReport = "Manager Count: " + managerEmployees.size();
+
+        String managerEmployeesReport = managerEmployees.entrySet().stream()
                 .map(entry -> "Manager: " + entry.getKey() + ", Employees: " + entry.getValue())
                 .collect(Collectors.joining("\n"));
+
+        return managerCountReport + "\n" + managerEmployeesReport;
     }
 
-    public String generateMaxAndMinSalaryReport() {
+    public String generateMaxAndMinSalaryReport(List<Employee> employees) {
 
         Map<String, Optional<Employee>> minMaxValues = employees.stream()
                 .collect(
@@ -230,7 +234,7 @@ public class CompanyAnalyticsManager {
     }
 
     // Variant A
-    public String generateGroupingEmployeesByDepartment() {
+    public String generateGroupingEmployeesByDepartment(List<Employee> employees) {
 
         return employees.stream()
                 .collect(
@@ -245,7 +249,7 @@ public class CompanyAnalyticsManager {
     }
 
     // Variant B
-    public String generateGroupingEmployeesByDepartmentV2() {
+    public String generateGroupingEmployeesByDepartmentV2(List<Employee> employees) {
 
         return employees.stream()
                 .collect(new DepartmentEmployeeCollector());
