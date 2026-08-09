@@ -1,9 +1,12 @@
 package src.service;
 
+import src.enums.ExperienceGroupEnum;
 import src.record.DepartmentSummary;
 import src.record.Employee;
 import src.seed.EmployeeSeed;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -27,11 +30,27 @@ public class CompanyAnalyticsManager {
         System.out.println("Task C\n");
         this.printSkillAnalytics();
         System.out.println("===========================================================================================");
+        System.out.println("Task D\n");
+        this.printAgeExperienceReport();
+        System.out.println("===========================================================================================");
     }
 
     public void printDepartmentAnalytics() {
 
-        Map<String, DepartmentSummary> departmentSummaries = getGroupedDepartmentSummaries();
+        Map<String, DepartmentSummary> departmentSummaries = employees.stream()
+                .collect(
+                        Collectors.groupingBy(
+                                Employee::department,
+                                Collectors.collectingAndThen(
+                                        Collectors.toList(),
+                                        (employeeList) -> new DepartmentSummary(
+                                                employeeList.size(),
+                                                employeeList.stream().mapToDouble(Employee::salary).average().orElse(0.0),
+                                                employeeList.stream().max(Comparator.comparingDouble(Employee::salary)),
+                                                employeeList.stream().mapToDouble(Employee::salary).sum()
+                                        ))
+                        )
+                );
 
         departmentSummaries.forEach((department, summary) -> {
             System.out.println("Department: " + department);
@@ -50,19 +69,33 @@ public class CompanyAnalyticsManager {
 
     public void printGeneralReport() {
 
-        System.out.println("Total Employee Count: " + this.getTotalEmployeeCount());
-        System.out.println("Total Salary: " + this.getTotalSalary());
-        System.out.println("Average Salary: " + this.getAvgSalary().orElse(0.0));
+        System.out.println("Total Employee Count: " + employees.size());
 
-        this.getOldestEmployee().ifPresentOrElse(
-                (employee) -> System.out.println("Oldest Employee: " + employee.name() + ", Age: " + employee.age()),
-                () -> System.out.println("Oldest Employee: N/A, Age: N/A")
-        );
+        Double totalSalary = employees.stream()
+                .mapToDouble(Employee::salary)
+                .sum();
 
-        this.getYoungestEmployee().ifPresentOrElse(
-                (employee) -> System.out.println("Youngest Employee: " + employee.name() + ", Age: " + employee.age()),
-                () -> System.out.println("Youngest Employee: N/A, Age: N/A")
-        );
+        System.out.println("Total Salary: " + Math.round(totalSalary * 100.0) / 100.0);
+
+        OptionalDouble avgSalary = employees.stream()
+                .mapToDouble(Employee::salary)
+                .average();
+
+        System.out.println("Average Salary: " + avgSalary.orElse(0.0));
+
+        employees.stream()
+                .max(Comparator.comparingInt(Employee::age))
+                .ifPresentOrElse(
+                        (employee) -> System.out.println("Oldest Employee: " + employee.name() + ", Age: " + employee.age()),
+                        () -> System.out.println("Oldest Employee: N/A, Age: N/A")
+                );
+
+        employees.stream()
+                .min(Comparator.comparingInt(Employee::age))
+                .ifPresentOrElse(
+                        (employee) -> System.out.println("Youngest Employee: " + employee.name() + ", Age: " + employee.age()),
+                        () -> System.out.println("Youngest Employee: N/A, Age: N/A")
+                );
     }
 
     public void printSkillAnalytics() {
@@ -113,58 +146,39 @@ public class CompanyAnalyticsManager {
 
         System.out.println("\n\n None Match Skill Departments: \n");
         System.out.println(noneMatchSkillDepartments);
-
     }
 
-    // Helper methods start
+    public void printAgeExperienceReport() {
 
-    private Map<String, DepartmentSummary> getGroupedDepartmentSummaries() {
-        return employees.stream()
+        Map<ExperienceGroupEnum, Double> experienceReport = employees.stream()
                 .collect(
                         Collectors.groupingBy(
-                                Employee::department,
-                                Collectors.collectingAndThen(
-                                        Collectors.toList(),
-                                        (employeeList) -> new DepartmentSummary(
-                                                employeeList.size(),
-                                                employeeList.stream().mapToDouble(Employee::salary).average().orElse(0.0),
-                                                employeeList.stream().max(Comparator.comparingDouble(Employee::salary)),
-                                                employeeList.stream().mapToDouble(Employee::salary).sum()
-                                        ))
+                                (employee) -> getExperienceGroup(employee.hireDate()),
+                                Collectors.averagingDouble(Employee::salary)
                         )
                 );
+
+        experienceReport.forEach((experienceGroup, avgSalary) ->
+                System.out.printf("Experience Group: %s, Average Salary: %.2f%n",
+                        experienceGroup.label(), avgSalary
+                )
+        );
     }
 
-    private Integer getTotalEmployeeCount() {
-        return employees.size();
-    }
+    // Helper methods
 
-    private Double getTotalSalary() {
-        return Math.round(
-                employees.stream()
-                        .mapToDouble(Employee::salary)
-                        .sum() * 100.0) / 100.0;
-    }
+    private ExperienceGroupEnum getExperienceGroup(LocalDate hireDate) {
+        long years = ChronoUnit.YEARS.between(hireDate, LocalDate.now());
 
-    private OptionalDouble getAvgSalary() {
-        return employees.stream()
-                .mapToDouble(Employee::salary)
-                .average()
-                .stream()
-                .map(avg -> Math.round(avg * 100.0) / 100.0)
-                .findFirst();
-    }
+        if (years <= 2) {
+            return ExperienceGroupEnum.ZERO_TO_TWO;
+        }
 
-    private Optional<Employee> getOldestEmployee() {
-        return employees.stream()
-                .max(Comparator.comparingInt(Employee::age));
-    }
+        if (years <= 5) {
+            return ExperienceGroupEnum.THREE_TO_FIVE;
+        }
 
-    private Optional<Employee> getYoungestEmployee() {
-        return employees.stream()
-                .min(Comparator.comparingInt(Employee::age));
+        return ExperienceGroupEnum.FIVE_PLUS;
     }
-
-    // Helper methods end
 
 }
