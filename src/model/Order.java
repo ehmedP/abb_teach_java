@@ -9,9 +9,9 @@ public class Order {
     private final Integer id;
     private String productName;
     private Integer quantity;
-    private Integer processingDuration;
+    private Long processingDuration;
 
-    public Order(String ProductName, Integer quantity, Integer processingDuration) {
+    public Order(String ProductName, Integer quantity, Long processingDuration) {
         this.id = nextId++;
 
         this.productName = ProductName;
@@ -39,11 +39,11 @@ public class Order {
         this.quantity = quantity;
     }
 
-    public Integer getProcessingDuration() {
+    public Long getProcessingDuration() {
         return processingDuration;
     }
 
-    public void setProcessingDuration(Integer processingDuration) {
+    public void setProcessingDuration(Long processingDuration) {
         this.processingDuration = processingDuration;
     }
 

@@ -4,13 +4,13 @@ import src.model.Order;
 
 public class OrderFactory {
 
-    public static Order create(String productName, Integer quantity, Integer processingDuration) {
+    public static Order create(String productName, Integer quantity, Long processingDuration) {
         validate(productName, quantity, processingDuration);
 
         return new Order(productName, quantity, processingDuration);
     }
 
-    private static void validate(String productName, Integer quantity, Integer processingDuration) {
+    private static void validate(String productName, Integer quantity, Long processingDuration) {
 
         if (productName == null || productName.isBlank()) {
             throw new IllegalArgumentException("Product name cannot be empty");

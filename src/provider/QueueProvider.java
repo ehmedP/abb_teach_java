@@ -13,7 +13,7 @@ public class QueueProvider {
         this.queue = new LinkedBlockingDeque<>(100);
     }
 
-    public BlockingQueue<Order> getOrders() {
+    public BlockingQueue<Order> getQueue() {
         return queue;
     }
 

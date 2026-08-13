@@ -38,7 +38,7 @@ public class OrderProducer implements Runnable {
                         OrderFactory.create(
                                 "Product " + (i + 1),
                                 random.nextInt(1, 10),
-                                random.nextInt(500, 3000)
+                                random.nextLong(500, 3000)
                         )
                 );
 
