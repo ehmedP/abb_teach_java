@@ -231,9 +231,9 @@ public class ECManager {
                 .count();
 
         System.out.println();
-        System.out.println("==========================================");
-        System.out.println("              FINAL REPORT                ");
-        System.out.println("==========================================");
+        System.out.println("===========================================================================================");
+        System.out.println("                                        FINAL REPORT                                       ");
+        System.out.println("===========================================================================================");
 
         System.out.printf("| %-20s | %10d |%n", "Total Created", total);
 
@@ -245,7 +245,7 @@ public class ECManager {
 
         System.out.printf("| %-20s | %10d |%n", "Partial", partial);
 
-        System.out.println("==========================================");
+        System.out.println("===========================================================================================");
     }
 
     private static boolean isSystemFinished(
