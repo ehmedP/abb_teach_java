@@ -27,17 +27,21 @@ public class ECManager {
         ConcurrentHashMap<Integer, OrderResult> results =
                 new ConcurrentHashMap<>();
 
+        ConcurrentHashMap<Integer, Order> inFlight =
+                new ConcurrentHashMap<>();
+
+        ThreadPoolExecutor workerPool =
+                (ThreadPoolExecutor) Executors.newFixedThreadPool(WORKER_COUNT);
+
         Thread producer = new Thread(
                 new OrderProducer(queue),
                 "Producer"
         );
 
         Thread monitor = new Thread(
-                new MonitorThread(queue, results),
+                new MonitorThread(queue, results, workerPool),
                 "Monitor"
         );
-
-        ExecutorService workerPool = Executors.newFixedThreadPool(WORKER_COUNT);
 
         producer.start();
         monitor.start();
@@ -58,12 +62,12 @@ public class ECManager {
 
                     System.out.println("!!! GLOBAL TIMEOUT !!!");
 
-                    cancelSystem(producer, workerPool, queue, results);
+                    cancelSystem(producer, workerPool, queue, inFlight, results);
 
                     break;
                 }
 
-                submitAvailableOrders(queue, workerPool, results);
+                submitAvailableOrders(queue, workerPool, inFlight, results);
 
                 Thread.sleep(50);
 
@@ -73,7 +77,7 @@ public class ECManager {
 
             Thread.currentThread().interrupt();
 
-            cancelSystem(producer, workerPool, queue, results);
+            cancelSystem(producer, workerPool, queue, inFlight, results);
         }
 
         finishProducer(producer);
@@ -89,6 +93,7 @@ public class ECManager {
     private static void submitAvailableOrders(
             BlockingQueue<Order> queue,
             ExecutorService workerPool,
+            ConcurrentHashMap<Integer, Order> inFlight,
             ConcurrentHashMap<Integer, OrderResult> results
     ) {
 
@@ -98,6 +103,8 @@ public class ECManager {
 
             Order finalOrder = order;
 
+            inFlight.put(finalOrder.getId(), finalOrder);
+
             workerPool.submit(() -> {
 
                 OrderWorker worker = new OrderWorker(finalOrder);
@@ -105,6 +112,8 @@ public class ECManager {
                 OrderResult result = worker.call();
 
                 results.put(finalOrder.getId(), result);
+
+                inFlight.remove(finalOrder.getId());
 
                 return result;
             });
@@ -167,6 +176,7 @@ public class ECManager {
             Thread producer,
             ExecutorService workerPool,
             BlockingQueue<Order> queue,
+            ConcurrentHashMap<Integer, Order> inFlight,
             ConcurrentHashMap<Integer, OrderResult> results
     ) {
 
@@ -185,6 +195,19 @@ public class ECManager {
                     )
             );
         }
+
+        for (Order pending : inFlight.values()) {
+
+            results.putIfAbsent(pending.getId(),
+                    new OrderResult(
+                            pending.getId(),
+                            OrderStatusEnum.TIMEOUT_CANCELLED,
+                            "Order cancelled during processing"
+                    )
+            );
+        }
+
+        inFlight.clear();
     }
 
     private static void printFinalReport(ConcurrentHashMap<Integer, OrderResult> results) {
