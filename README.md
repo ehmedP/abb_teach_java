@@ -65,6 +65,4 @@ Qiymətləndirmə meyarlarında ən vacibi Selector-un düzgün konfiqurasiyası
 
 ## Output image
 
-### 1. Server başlayır (menyu)
-
 ![output](images/img1.png)
