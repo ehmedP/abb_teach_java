@@ -1,0 +1,38 @@
+=== Employees by Department ===
+HR:
+  - Nərmin
+IT:
+  - Elvin
+  - Rəşad
+  - Tural
+Marketing:
+  - Aysel
+  - Günel
+
+=== Average Salary by Department ===
+HR: 1100.00
+IT: 2433.33
+Marketing: 1350.00
+
+=== Employees with Salary > 2000 ===
+Rəşad: 2500.0
+Tural: 3000.0
+
+=== Employees Sorted by Salary ===
+Tural: 3000.0
+Rəşad: 2500.0
+Elvin: 1800.0
+Günel: 1500.0
+Aysel: 1200.0
+Nərmin: 1100.0
+
+=== Highest Salary Employee ===
+Tural: 3000.0
+
+=== Employee Names ===
+Elvin, Aysel, Rəşad, Nərmin, Tural, Günel
+
+=== Employee Count by Department ===
+HR: 1
+IT: 3
+Marketing: 2

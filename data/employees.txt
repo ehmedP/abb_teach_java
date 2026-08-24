@@ -1,0 +1,6 @@
+Elvin,IT,1800,25
+Aysel,Marketing,1200,30
+Rəşad,IT,2500,35
+Nərmin,HR,1100,28
+Tural,IT,3000,40
+Günel,Marketing,1500,26
