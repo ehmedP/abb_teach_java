@@ -32,7 +32,7 @@ create table if not exists store.customers
     first_name    varchar(100) not null,
     last_name     varchar(100) not null,
     email         varchar(100) not null unique,
-    city          varchar(50) not null,
+    city          varchar(50)  not null,
     registered_at DATe default current_date
 );
 
@@ -151,15 +151,24 @@ update store.products
 set price = price * 1.10
 where category_id = 1;
 
+select *
+from store.products;
+
 -- Task 14
 update store.customers
 set phone = '+994500000000'
 where customers.phone is null;
 
+select *
+from store.customers;
+
 -- Task 15
 delete
 from store.orders
 where status = 'legv edildi';
+
+select *
+from store.orders;
 
 
 -- Section 3: Queries
@@ -261,6 +270,9 @@ limit 2;
 -- commit;
 
 rollback;
+
+select *
+from store.products;
 
 -- Task 30
 begin;
