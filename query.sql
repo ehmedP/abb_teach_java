@@ -282,23 +282,18 @@ select *
 from store.orders;
 
 -- Task 32
-
 begin;
 
--- this query is wrong on purpose, column "stock" was renamed in Task 7
 select stock
 from store.products;
--- error 42703: column "stock" does not exist
 
--- this query is correct, but it still does not run
 select *
 from store.products;
--- error 25P02: current transaction is aborted, commands ignored until end of transaction block
--- after any error inside a transaction postgres marks the whole transaction as aborted,
--- so every next command is ignored until rollback or commit is called
 
 rollback;
 
--- after rollback the session is clean again and the same query works
 select *
 from store.products;
+
+-- [42703] ERROR: column "stock" does not exist
+--   Position: 8
