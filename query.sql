@@ -22,7 +22,7 @@ create table if not exists store.products
     price       decimal(10, 2) not null check ( price >= 0),
     stock       int            not null check ( stock >= 0),
     category_id int            not null,
-    constraint fk_category foreign key (category_id) references categories (id) on delete restrict
+    constraint fk_category foreign key (category_id) references store.categories (id) on delete restrict
 );
 
 -- Task 4
@@ -32,7 +32,7 @@ create table if not exists store.customers
     first_name    varchar(100) not null,
     last_name     varchar(100) not null,
     email         varchar(100) not null unique,
-    city          varchar(100) not null,
+    city          varchar(50) not null,
     registered_at DATe default current_date
 );
 
@@ -45,8 +45,8 @@ create table if not exists store.orders
     quantity    int not null check (quantity > 0),
     order_date  date        default current_date,
     status      varchar(20) default 'pending',
-    constraint fk_customer foreign key (customer_id) references customers (id) on delete cascade,
-    constraint fk_product foreign key (product_id) references products (id) on delete cascade
+    constraint fk_customer foreign key (customer_id) references store.customers (id) on delete cascade,
+    constraint fk_product foreign key (product_id) references store.products (id) on delete cascade
 );
 
 -- Task 6
@@ -71,6 +71,9 @@ values ('Electronics', 'Devices and gadgets'),
        ('Clothing', 'Apparel for men, women, and children'),
        ('Sports', 'Sport equipment and accessories');
 
+select *
+from store.categories;
+
 -- Task 10
 insert into store.products (name, price, stock_quantity, category_id)
 values ('Laptop Pro 15', 1250.00, 12, 1),
@@ -94,6 +97,9 @@ values ('Laptop Pro 15', 1250.00, 12, 1),
        ('Tennis Racket', 175.00, 9, 4),
        ('Mountain Bicycle', 890.00, 3, 4);
 
+select *
+from store.products;
+
 -- Task 11
 insert into store.customers (first_name, last_name, email, city, registered_at, phone)
 values ('Aysel', 'Mammadova', 'aysel.mammadova@gmail.com', 'Baku', '2024-01-15', '+994501112233'),
@@ -106,6 +112,9 @@ values ('Aysel', 'Mammadova', 'aysel.mammadova@gmail.com', 'Baku', '2024-01-15',
        ('Elvin', 'Babayev', 'elvin.babayev@gmail.com', 'Baku', '2024-08-09', '+994708889900'),
        ('Sevinc', 'Karimova', 'sevinc.karimova@yahoo.com', 'Shaki', '2024-09-14', '+994509990011'),
        ('Tural', 'Hasanov', 'tural.hasanov@gmail.com', 'Mingachevir', '2024-10-02', '+994551234567');
+
+select *
+from store.customers;
 
 -- Task 12
 insert into store.orders (customer_id, product_id, quantity, order_date, status)
@@ -133,6 +142,9 @@ values (1, 1, 1, '2024-03-01', 'catdirildi'),
        (9, 19, 2, '2024-11-01', 'legv edildi'),
        (10, 1, 1, '2024-11-14', 'gonderildi'),
        (10, 13, 2, '2024-11-28', 'gozleyir');
+
+select *
+from store.orders;
 
 -- Task 13
 update store.products
