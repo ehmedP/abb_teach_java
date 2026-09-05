@@ -19,8 +19,8 @@ create table if not exists store.products
 (
     id          serial primary key,
     name        varchar(100)   not null,
-    price       decimal(10, 2) not null check ( price >= 0),
-    stock       int            not null check ( stock >= 0),
+    price       decimal(10, 2) not null check ( price > 0 ),
+    stock       int            not null check ( stock >= 0 ),
     category_id int            not null,
     constraint fk_category foreign key (category_id) references store.categories (id) on delete restrict
 );
@@ -33,7 +33,7 @@ create table if not exists store.customers
     last_name     varchar(100) not null,
     email         varchar(100) not null unique,
     city          varchar(50)  not null,
-    registered_at DATe default current_date
+    registered_at date default current_date
 );
 
 -- Task 5
@@ -42,9 +42,9 @@ create table if not exists store.orders
     id          serial primary key,
     customer_id int not null,
     product_id  int not null,
-    quantity    int not null check (quantity > 0),
+    quantity    int not null check (quantity >= 1),
     order_date  date        default current_date,
-    status      varchar(20) default 'pending',
+    status      varchar(20) default 'gozleyir',
     constraint fk_customer foreign key (customer_id) references store.customers (id) on delete cascade,
     constraint fk_product foreign key (product_id) references store.products (id) on delete cascade
 );
@@ -149,15 +149,16 @@ from store.orders;
 -- Task 13
 update store.products
 set price = price * 1.10
-where category_id = 1;
+where category_id = (select id from store.categories where name = 'Electronics');
 
 select *
-from store.products;
+from store.products
+where category_id = (select id from store.categories where name = 'Electronics');
 
 -- Task 14
 update store.customers
 set phone = '+994500000000'
-where customers.phone is null;
+where phone is null;
 
 select *
 from store.customers;
@@ -171,7 +172,7 @@ select *
 from store.orders;
 
 
--- Section 3: Queries
+-- Section 3: DQL - WHERE conditions
 
 -- Task 16
 select *
@@ -189,7 +190,7 @@ select *
 from store.customers
 where city <> 'Baku';
 
--- Task 18 - 2
+-- Task 18 - 2 (same result with the != operator)
 select *
 from store.customers
 where city != 'Baku';
@@ -217,8 +218,8 @@ where email like '%gmail%';
 -- Task 23
 select *
 from store.customers
-where customers.phone is null;
--- Result like that because of Task 14, all null phones were updated to '+994500000000', so this query will return no results.
+where phone is null;
+-- Result is empty because of Task 14: all null phones were updated to '+994500000000',so there is no NULL left in the phone column.
 
 -- Task 24
 select *
@@ -227,12 +228,12 @@ where price > 100
   and stock_quantity > 5;
 
 
--- Section 4: DQL Statements
+-- Section 4: DQL - ORDER BY
 
 -- Task 25
 select *
 from store.products
-order by price;
+order by price asc;
 -- default is ascending order
 
 -- Task 26
@@ -243,7 +244,7 @@ order by registered_at desc;
 -- Task 27
 select *
 from store.products
-order by category_id, price desc;
+order by category_id asc, price desc;
 
 -- Task 28
 select *
@@ -258,21 +259,21 @@ limit 3;
 begin;
 
 insert into store.products (name, price, stock_quantity, category_id)
-VALUES ('Tablet Z', 350.00, 15, 1),
-       ('E-Reader', 120.00, 30, 2);
+values ('Tablet Z', 350.00, 15, 1);
 
+-- inside the transaction the product is visible
 select *
 from store.products
-order by id desc
-limit 2;
-
--- commit elememis hara dusure
--- commit;
+where name = 'Tablet Z';
 
 rollback;
 
+-- check again after the rollback
 select *
-from store.products;
+from store.products
+where name = 'Tablet Z';
+-- Answer: the product did not stay in the table. ROLLBACK undoes every change made
+-- inside the transaction, so the INSERT was discarded and this SELECT returns 0 rows.
 
 -- Task 30
 begin;
@@ -286,38 +287,50 @@ commit;
 select *
 from store.customers
 where id = 3;
+-- The change is permanent because of COMMIT, the city is 'Baku' now.
 
 -- Task 31
 begin;
 
+-- first order
 insert into store.orders (customer_id, product_id, quantity, order_date, status)
-VALUES (3, 5, 1, '2024-12-01', 'gozleyir');
+values (3, 5, 1, '2024-12-01', 'gozleyir');
 
 savepoint sp1;
 
+-- second order
 insert into store.orders (customer_id, product_id, quantity, order_date, status)
-VALUES (3, 6, 2, '2024-12-02', 'gozleyir');
+values (3, 6, 2, '2024-12-02', 'gozleyir');
 
 rollback to sp1;
 
 commit;
 
 select *
-from store.orders;
+from store.orders
+where order_date in ('2024-12-01', '2024-12-02');
+-- Answer: only 1 order stayed. ROLLBACK TO sp1 undid the second INSERT that came after
+-- the savepoint, while the first INSERT was before it, so COMMIT saved that one
 
 -- Task 32
 begin;
 
+-- intentionally wrong query: this column does not exist (it is stock_quantity now)
 select stock
 from store.products;
+-- [42703] ERROR: column "stock" does not exist
 
+-- now a correct query
 select *
 from store.products;
+-- [25P02] ERROR: current transaction is aborted, commands ignored until end of transaction block
+-- The correct query does not work either. In Postgres, when one statement fails inside a
+-- transaction, the whole transaction goes into the "aborted" state and every following
+-- statement is rejected with 25P02
 
+-- How to get out of it: close the transaction with ROLLBACK
 rollback;
 
+-- after the rollback the same query works again
 select *
 from store.products;
-
--- [42703] ERROR: column "stock" does not exist
---   Position: 8
