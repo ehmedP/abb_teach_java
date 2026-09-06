@@ -37,7 +37,7 @@ values (1, ' noutbuk ', 'Texnika', 'Bakı', 'aysel memmedova', 2, 1250.00, 10.00
 -- task 1: Hər satış üçün satis_id, məhsul adının boşluqsuz və böyük hərflərlə yazılışı, həmin adın hərf sayı və ilk 3 hərfi göstərilən sorğunu yazın. Nəticə satis_id üzrə sıralansın.
 
 select s.satis_id,
-       upper(trim(s.mehsul)),
+       upper(trim(s.mehsul))          as mehsul_adi,
        length(trim(s.mehsul))         as herf_sayi,
        upper(left(trim(s.mehsul), 3)) as ilk_3_herf
 from satislar s
@@ -51,7 +51,7 @@ order by mehsul_adi;
 
 -- task 3: Hər satış üçün MƏHSUL / Şəhər formatında etiket sütunu düzəldin. Şəhər NULL olduqda etiketdə NAMELUM yazılsın.
 
-select *, concat(upper(trim(s.mehsul)), ' / ', coalesce(upper(trim(s.seher)), 'NAMELUM')) as etiket
+select *, concat(upper(trim(s.mehsul)), ' / ', coalesce(trim(s.seher), 'NAMELUM')) as etiket
 from satislar s;
 
 -- task 4: Satıcıların təkrarsız siyahısını çıxarın və `satici` sütununu ad və soyad olmaqla iki sütuna bölün.
@@ -64,7 +64,8 @@ group by s.satici;
 -- task 5: Hər satış üçün anbar kodu yaradın: məhsulun ilk 3 hərfi (böyük) - satışın ayı - 3 rəqəmli `satis_id`. Nümunə: `NOU-01-001`.
 
 select *,
-       concat(left(upper(trim(s.mehsul)), 3), '-', s.miqdar, '-', lpad(text(s.satis_id), 3, '0')) as code
+       concat(left(upper(trim(s.mehsul)), 3), '-', to_char(s.tarix, 'MM'), '-',
+              lpad(s.satis_id::varchar, 3, '0')) as anbar_kodu
 from satislar s;
 
 -- task 6: Hər satış üçün ümumi məbləği (`qiymet * miqdar`), onun 18% ƏDV-ni (2 rəqəmə yuvarlaqlaşdırılmış), qiymətin yuxarı və aşağı yuvarlaqlaşdırılmış variantını hesablayın. Ümumi məbləğə görə azalan sıra.
@@ -102,18 +103,18 @@ where qiymet * miqdar > (select avg(qiymet * miqdar) from satislar);
 -- task 10: Hər satışın tarixindən il, ay və gün hissələrini ayrı sütunlarda çıxarın.
 
 select *,
-       extract(year from tarix),
-       extract(month from tarix),
-       extract(day from tarix)
+       extract(year from tarix)  as il,
+       extract(month from tarix) as ay,
+       extract(day from tarix)   as gun
 from satislar;
 
 -- task 11: Yalnız iyun və iyul aylarındakı satışlar üçün: satışın üzərindən neçə gün keçdiyi və tarixə 30 gün əlavə edilmiş zəmanət sonu tarixi.
 
 select *,
-       current_date - tarix,
-       tarix + interval '30 days' as thirty_days_later
+       current_date - tarix       as kecen_gun,
+       tarix + interval '30 days' as zemanet_sonu
 from satislar
-where extract(month from tarix) = 7;
+where extract(month from tarix) in (6, 7);
 
 -- task 12: Aylıq hesabat: hər ay üçün (format `AA-İİİİ`, məsələn `03-2024`) satış sayı və ümumi dövriyyə. Xronoloji sıra.
 
@@ -150,7 +151,7 @@ select *,
        endirim_faiz               as xam_deyer,
        coalesce(endirim_faiz, 0)  as null_0,
        nullif(endirim_faiz, 0)    as sifir_null,
-       coalesce(seher, 'NAMELUM') as seher
+       coalesce(seher, 'NAMELUM') as seher_namelumsuz
 from satislar;
 
 -- task 16: Hər satış üçün: qiymətin mətn tipinə çevrilmiş variantı, `satis_id-məhsul` kodu (məs. `1-noutbuk`) və satışdan 2024-12-31-ə qədər neçə gün qaldığı.
@@ -158,7 +159,7 @@ from satislar;
 select *,
        qiymet::varchar                                 as qiymet_str,
        satis_id::varchar || '-' || upper(trim(mehsul)) as satis_kod,
-       abs(tarix::date - '2024-12-31'::date)           as gun_ferqi
+       '2024-12-31'::date - tarix                      as qalan_gun
 from satislar;
 
 -- task 17: Hər satıcı üçün: ümumi satış sayı, endirimi qeyd olunmuş (null olmayan) satışların sayı, həqiqətən endirim tətbiq edilmiş (0-dan böyük) satışların sayı və sonuncunun faizi. Faizə görə azalan sıra.
@@ -176,9 +177,9 @@ order by endirim_faizi desc;
 
 select *,
        case
-           when qiymet >= 1000 then 'bahali'
-           when qiymet between 300 and 999 then 'orta'
-           else 'ucuz'
+           when qiymet >= 1000 then 'Bahali'
+           when qiymet >= 300 then 'Orta'
+           else 'Ucuz'
            end as qiymet_kateqoriya
 from satislar
 order by qiymet desc;
@@ -187,15 +188,15 @@ order by qiymet desc;
 
 select *,
        case
-           when endirim_faiz is null or endirim_faiz = 0 then 'endirim yoxdur'
-           when endirim_faiz >= 15 then 'boyuk endirim'
-           else 'kicik endirim'
+           when endirim_faiz is null or endirim_faiz = 0 then 'Endirim yoxdur'
+           when endirim_faiz >= 15 then 'Boyuk endirim'
+           else 'Kicik endirim'
            end as endirim_kateqoriya
 from satislar;
 
 -- task 20: Tək sorğu, tək sətir nəticə: ümumi satış sayı, Texnika satışlarının sayı, Aksesuar satışlarının sayı. WHERE istifadə etmək olmaz.
 
-select count(*),
+select count(*)                                            as umumi_satis,
        count(case when kateqoriya = 'Texnika' then 1 end)  as texnika_sayi,
        count(case when kateqoriya = 'Aksesuar' then 1 end) as aksesuar_sayi
 from satislar;
@@ -213,11 +214,12 @@ from satislar;
 
 -- task 22: Şəhər üzrə satış sayı və dövriyyə. Şəhəri null olan satış `namelum` adı altında görünsün. Dövriyyəyə görə azalan sıra.
 
-select coalesce(upper(trim(seher)), 'namelum') as seher,
+select coalesce(upper(trim(seher)), 'Namelum') as seher,
        count(*)                                as satis_sayi,
        round(sum(qiymet * miqdar), 2)          as umumi_dovriyye
 from satislar
-group by upper(trim(seher));
+group by coalesce(upper(trim(seher)), 'Namelum')
+order by umumi_dovriyye desc;
 
 -- task 23: Satıcı üzrə hesabat: yalnız qiyməti 50-dən böyük satışlar nəzərə alınsın, qruplaşdırmadan sonra isə yalnız dövriyyəsi 5000-dən çox olan satıcılar qalsın.
 
@@ -244,10 +246,10 @@ order by qiymet_ferqi desc;
 
 -- task 25: Hər şəhər üçün orada satılan məhsulların vergüllə ayrılmış siyahısını bir sətirdə çıxarın (təkrarsız, böyük hərflərlə).
 
-select coalesce(upper(trim(seher)), 'namelum')                                     as seher,
+select coalesce(upper(trim(seher)), 'Namelum')                                     as seher,
        string_agg(distinct upper(trim(mehsul)), ', ' order by upper(trim(mehsul))) as mehsullar
 from satislar
-group by seher;
+group by coalesce(upper(trim(seher)), 'Namelum');
 
 -- task 26: Bütün satışları qiymətə görə azalan sıralayın və üç sütun əlavə edin: `row_number()`, `rank()`, `dense_rank()`.
 
@@ -260,11 +262,13 @@ order by qiymet desc;
 
 -- task 27: Hər şəhərin daxilində satışları məbləğə görə sıralayın (null şəhər `namelum` qrupuna düşsün).
 
-select coalesce(upper(trim(seher)), 'namelum')                                                       as seher,
-       qiymet,
-       row_number() over (partition by coalesce(upper(trim(seher)), 'namelum') order by qiymet desc) as rn
+select coalesce(upper(trim(seher)), 'Namelum') as seher,
+       satis_id,
+       qiymet * miqdar                         as mebleg,
+       row_number() over (partition by coalesce(upper(trim(seher)), 'Namelum')
+           order by qiymet * miqdar desc)      as rn
 from satislar
-order by seher, qiymet desc;
+order by seher, mebleg desc;
 
 
 -- task 28: Hər satışın ümumi dövriyyədə neçə faiz pay tutduğunu hesablayın. Ümumi cəm `sum(...) over ()` ilə alınmalıdır — group by istifadə etmək olmaz, nəticədə 18 sətir qalmalıdır.
@@ -295,18 +299,16 @@ from satislar;
 
 select *
 from (select *,
-             round(qiymet * miqdar, 2)                         as mebleg,
-             dense_rank() over (order by qiymet * miqdar desc) as rank_
+             dense_rank() over (order by qiymet desc) as rank_
       from satislar) t
-where t.rank_ = 2
-order by t.mebleg desc;
+where t.rank_ = 2;
 
 -- task 32: Hər satıcının ən böyük məbləğli satışını tapın — satıcı başına yalnız 1 sətir. Məbləğə görə azalan sıra.
 
 select *
 from (select *,
-             round(qiymet * miqdar, 2)                                                                         as mebleg,
-             rank() over (partition by coalesce(upper(trim(satici)), 'namelum') order by qiymet * miqdar desc) as rank_
+             round(qiymet * miqdar, 2)                                                          as mebleg,
+             row_number() over (partition by upper(trim(satici)) order by qiymet * miqdar desc) as rank_
       from satislar) t
 where rank_ = 1
 order by mebleg desc;
@@ -330,9 +332,9 @@ limit 1;
 
 select t.ay,
        t.umumi_dovriyye,
-       lag(t.umumi_dovriyye) over () as evvelki_dovriyye,
-       round((t.umumi_dovriyye - lag(t.umumi_dovriyye) over ()) / lag(t.umumi_dovriyye) over () * 100, 2)::varchar ||
-       '%'                           as artim_faizi
+       lag(t.umumi_dovriyye) over (order by t.ay)                                       as evvelki_dovriyye,
+       round((t.umumi_dovriyye - lag(t.umumi_dovriyye) over (order by t.ay))
+                 / lag(t.umumi_dovriyye) over (order by t.ay) * 100, 1)::varchar || '%' as artim_faizi
 from (select to_char(date_trunc('month', tarix), 'MM-YYYY') as ay,
              round(sum(qiymet * miqdar), 2)                 as umumi_dovriyye
       from satislar
@@ -379,16 +381,17 @@ select *
 from (select initcap(trim(satici))                                        as satici,
              lag(tarix) over (partition by satici order by tarix)         as evvelki_tarix,
              tarix                                                        as sonraki_tarix,
-             tarix - lag(tarix) over (partition by satici order by tarix) as fasilə
+             tarix - lag(tarix) over (partition by satici order by tarix) as fasile
       from satislar) t
 where evvelki_tarix is not null
-order by fasilə desc
+order by fasile desc
 limit 3;
 
 -- task 39: Qiyməti öz şəhərinin orta qiymətindən yüksək olan satışları tapın. Nəticədə şəhər, satis_id, qiymət və həmin şəhərin orta qiyməti göstərilsin.
 
-select *, t.seher_orta_qiymet
+select t.seher_adi as seher, t.satis_id, t.qiymet, round(t.seher_orta_qiymet, 2) as seher_orta_qiymet
 from (select *,
+             coalesce(initcap(trim(seher)), 'NAMELUM')                                 as seher_adi,
              avg(qiymet) over (partition by coalesce(initcap(trim(seher)), 'NAMELUM')) as seher_orta_qiymet
       from satislar) t
 where t.qiymet > t.seher_orta_qiymet;
@@ -405,4 +408,6 @@ select coalesce(upper(trim(satici)), 'NAMELUM')                                 
            else 'Zeif'
            end                                                                  as status
 from satislar
-group by satici_name;
+group by satici_name
+having count(*) >= 3
+order by xalis_dovriyye desc;
