@@ -291,7 +291,7 @@ select *,
        ntile(4) over (order by qiymet * miqdar desc) as quartile
 from satislar;
 
--- task 31:
+-- task 31: İkinci ən bahalı satışı tapın. LIMIT və ya OFFSET istifadə etmək qadağandır.
 
 select *
 from (select *,
@@ -301,7 +301,7 @@ from (select *,
 where t.rank_ = 2
 order by t.mebleg desc;
 
--- task 32:
+-- task 32: Hər satıcının ən böyük məbləğli satışını tapın — satıcı başına yalnız 1 sətir. Məbləğə görə azalan sıra.
 
 select *
 from (select *,
@@ -326,4 +326,83 @@ where t.mebleg_ferqi_evvelki < 0
 order by t.mebleg_ferqi_evvelki
 limit 1;
 
--- task 34:
+-- task 34: Aydan-aya artım faizi: hər ay üçün dövriyyə, əvvəlki ayın dövriyyəsi və artım faizi (1 rəqəm). İlk ayda faiz NULL olmalıdır.
+
+select t.ay,
+       t.umumi_dovriyye,
+       lag(t.umumi_dovriyye) over () as evvelki_dovriyye,
+       round((t.umumi_dovriyye - lag(t.umumi_dovriyye) over ()) / lag(t.umumi_dovriyye) over () * 100, 2)::varchar ||
+       '%'                           as artim_faizi
+from (select to_char(date_trunc('month', tarix), 'MM-YYYY') as ay,
+             round(sum(qiymet * miqdar), 2)                 as umumi_dovriyye
+      from satislar
+      group by ay
+      order by ay) t;
+
+-- task 35: Hər ayın ilk satışını tapın: ay, satis_id, tarix və məhsul adı (7 sətir).
+
+select t.ay, t.satis_id, t.tarix, t.mehsul
+from (select to_char(date_trunc('month', tarix), 'MM-YYYY') as ay,
+             row_number() over (
+                 partition by to_char(date_trunc('month', tarix), 'MM-YYYY')
+                 order by tarix
+                 )                                          as ay_sira,
+             satis_id,
+             tarix,
+             coalesce(initcap(trim(mehsul)), 'NAMELUM')     as mehsul
+      from satislar
+      order by tarix) t
+where t.ay_sira = 1;
+
+-- task 36: Satışları məbləğə görə azalan sıralayın və ümumi dövriyyənin 50%-ni doldurmaq üçün kifayət edən ən böyük satışları tapın (Pareto təhlili). Hər sətirdə yığılan cəm və onun faizi də görünsün.
+
+select t.*, round(t.yigilan_cem / t.umumi_cem * 100, 2) as yigilan_faiz
+from (select *,
+             round(qiymet * miqdar, 2)                                 as mebleg,
+             sum(qiymet * miqdar) over (order by qiymet * miqdar desc) as yigilan_cem,
+             sum(qiymet * miqdar) over ()                              as umumi_cem
+      from satislar) t
+where (t.yigilan_cem - t.mebleg) / t.umumi_cem < 0.5
+order by t.mebleg desc;
+
+-- task 37: Hər şəhərin ümumi dövriyyədəki faiz payını hesablayın. Şərt: sorğuda həm GROUP BY, həm də pəncərə funksiyası eyni anda işlədilməlidir (alt-sorğu olmadan).
+
+select coalesce(initcap(trim(seher)), 'NAMELUM')                                                as seher,
+       sum(qiymet * miqdar)                                                                     as seher_dovriyye,
+       round(sum(qiymet * miqdar) / sum(sum(qiymet * miqdar)) over () * 100, 2)::varchar || '%' as seher_faizi
+from satislar
+group by coalesce(initcap(trim(seher)), 'NAMELUM');
+
+-- task 38: Hər satıcının satışları arasında ən uzun fasilə (gün ilə) hansı olub? Ən uzun 3 fasiləni göstərin: satıcı, əvvəlki tarix, sonrakı tarix, fasilə.
+
+select *
+from (select initcap(trim(satici))                                        as satici,
+             lag(tarix) over (partition by satici order by tarix)         as evvelki_tarix,
+             tarix                                                        as sonraki_tarix,
+             tarix - lag(tarix) over (partition by satici order by tarix) as fasilə
+      from satislar) t
+where evvelki_tarix is not null
+order by fasilə desc
+limit 3;
+
+-- task 39: Qiyməti öz şəhərinin orta qiymətindən yüksək olan satışları tapın. Nəticədə şəhər, satis_id, qiymət və həmin şəhərin orta qiyməti göstərilsin.
+
+select *, t.seher_orta_qiymet
+from (select *,
+             avg(qiymet) over (partition by coalesce(initcap(trim(seher)), 'NAMELUM')) as seher_orta_qiymet
+      from satislar) t
+where t.qiymet > t.seher_orta_qiymet;
+
+-- task 40: Yekun hesabat. Satıcılar üzrə bir sorğuda: adı böyük hərflərlə, satış sayı, endirim çıxıldıqdan sonrakı xalis dövriyyə (2 rəqəm), orta qiymət (1 rəqəm) və status — brut dövriyyə 6000+ → `Ulduz`, 5000+ → `Yaxsi`, qalanı → `Zeif`. Yalnız 3 və daha çox satışı olan satıcılar, xalis dövriyyəyə görə azalan sıra.
+
+select coalesce(upper(trim(satici)), 'NAMELUM')                                 as satici_name,
+       count(*)                                                                 as satis_sayi,
+       round(sum(qiymet * miqdar * (1 - coalesce(endirim_faiz, 0) / 100.0)), 2) as xalis_dovriyye,
+       round(avg(qiymet), 1)                                                    as orta_qiymet,
+       case
+           when sum(qiymet * miqdar) >= 6000 then 'Ulduz'
+           when sum(qiymet * miqdar) >= 5000 then 'Yaxsi'
+           else 'Zeif'
+           end                                                                  as status
+from satislar
+group by satici_name;
