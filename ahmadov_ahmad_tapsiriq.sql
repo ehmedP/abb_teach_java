@@ -384,7 +384,7 @@ CREATE TABLE kurs_qeydiyyat
 -- kurs_kod -> fenn_kod
 -- kurs_kod -> fenn_ad
 -- (muellim_id, otaq_no, qeyd_tarixi, odenis, imtahan_bali isə tam açara -
--- (telebe_id, kurs_kod) ikisinə birdən - asılıdır;
+-- (telebe_id, kurs_kod) ikisinə birdən - asılıdır, yəni onlar qismən asılılıq deyil.)
 
 -- c) Cədvəli 2NF-ə parçala; bütün CREATE TABLE-ləri PK + FK ilə yaz.
 
@@ -452,6 +452,7 @@ CREATE TABLE kurs_qeydiyyat
 -- c) "F-01 filialının ünvanı dəyişdi" əməliyyatı 3NF-dən əvvəl və sonra neçə sətri UPDATE edir? Hər iki halı yaz.
 -- İzah:
 -- 3NF-dən əvvəl: F-01-ə aid bütün qeydiyyat sətirləri yenilənməli olur, çünki filial_unvan hər sətirdə təkrarlanır.
+-- Bizim datada bu 4 sətirdir (T-01/SQL-101, T-01/PYT-201, T-02/SQL-101, T-05/SQL-101 - hamısı F-01-in A-201/A-305 otaqlarındadır).
 -- Real, dolu cədvəldə (milyon/milyard qeydiyyat olduqda) bu, eyni sayda sətri UPDATE etmək deməkdir.
 -- 3NF-dən sonra: yalnız filial cədvəlindəki 1 sətir (F-01) yenilənir, qeydiyyat cədvəlinə heç toxunulmur.
 
@@ -803,6 +804,11 @@ FROM filial f
          CROSS JOIN qiymet_shkalasi qs
 ORDER BY f.filial_kod, qs.herf;
 
+SELECT COUNT(*) AS setir_sayi
+FROM filial f
+         CROSS JOIN qiymet_shkalasi qs;
+
+
 -- b) CROSS JOIN ilə "fənn x qiymət hərfi" matrisi; hər xanada həmin fənn üzrə
 --    həmin qiyməti alan tələbələrin sayı. Sıfır xanalar da görünsün.
 --    (İpucu: CROSS JOIN + LEFT JOIN + COUNT)
@@ -980,11 +986,13 @@ ORDER BY t.telebe_ad;
 -- Nəticə: 6 sətir (T-05 imtahan verməyib, BETWEEN NULL ilə heç bir hərflə uyğunlaşmır).
 
 -- b) Hər hərf üzrə nəticə sayı və orta bal; heç kimin almadığı hərf də 0 ilə.
-SELECT qs.herf, COUNT(q.imtahan_bali) AS neticeler_sayi, AVG(q.imtahan_bali) AS orta_bal
+SELECT qs.herf, COUNT(q.imtahan_bali) AS neticeler_sayi, COALESCE(AVG(q.imtahan_bali), 0) AS orta_bal
 FROM qiymet_shkalasi qs
          LEFT JOIN qeydiyyat q ON q.imtahan_bali BETWEEN qs.min_bal AND qs.max_bal
 GROUP BY qs.herf
 ORDER BY qs.herf;
+-- Qeyd: LEFT JOIN qiymet_shkalasi tərəfdən gedir, ona görə heç kimin almadığı hərf də sətir kimi qalır;
+-- COUNT(sütun) belə hərf üçün onsuz da 0 verir, AVG isə NULL verərdi - onu COALESCE ilə 0-a çevirdim.
 
 -- c) Özündən böyük bal alan hər tələbə ilə cütlük quran non-equi SELF JOIN;
 --    hər nəticə üçün "ondan yuxarıda neçə nəticə var" sütunu.
